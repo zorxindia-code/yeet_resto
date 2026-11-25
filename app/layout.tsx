@@ -8,8 +8,8 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { MobileActionBar } from "@/components/MobileActionBar";
 import { SITE } from "@/lib/site";
 
-const fredoka = Fredoka({ subsets: ["latin"], variable: "--font-fredoka", weight: ["400", "500", "600", "700"] });
-const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-dm", weight: ["400", "500", "700"] });
+const fredoka = Fredoka({ subsets: ["latin"], variable: "--font-fredoka", display: "swap" });
+const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-dm", display: "swap" });
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     images: [{ url: "/brand/yeet-logo.png", alt: "YEET RESTO CAFÉ logo" }],
     type: "website",
   },
-  icons: { icon: "/brand/yeet-logo.png" },
+  // Favicons come from app/icon.png and app/apple-icon.png (small, purpose-sized files).
 };
 
 export const viewport: Viewport = {
@@ -43,7 +43,9 @@ const introScript = `
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${fredoka.variable} ${dmSans.variable}`}>
+    // suppressHydrationWarning: introScript sets data-intro on <html> before hydration on purpose.
+    // It only covers this element's own attributes, not its children.
+    <html lang="en" className={`${fredoka.variable} ${dmSans.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: introScript }} />
       </head>

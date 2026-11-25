@@ -1,99 +1,22 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import Image from "next/image";
+import { useEffect, useRef } from "react";
 import { gsap, registerGsap, prefersReducedMotion } from "@/lib/motion";
+import { BURGER_LAYERS, BURGER_VIEW } from "@/components/illustrations/BurgerLayers";
 
-const R = "#DD0303";
-const VIEW_TOP = 90;
-const VIEW_H = 310;
-
-type Layer = { key: string; label: string; art: ReactNode };
-
-// Bottom → top. Stylised placeholders for real transparent ingredient photos (same keys/positions can
-// be reused when individual ingredient PNG/WebP assets are supplied).
-const LAYERS: Layer[] = [
-  {
-    key: "bottom-bun",
-    label: "Bottom bun",
-    art: <path d="M40 330 H360 Q360 384 308 384 H92 Q40 384 40 330 Z" fill="#fff" stroke={R} strokeWidth="6" />,
-  },
-  {
-    key: "sauce",
-    label: "YEET sauce",
-    art: <path d="M44 318 H356 Q360 330 346 330 Q336 346 326 330 H226 Q216 346 206 330 H110 Q100 344 90 330 H54 Q40 330 44 318 Z" fill={R} />,
-  },
-  {
-    key: "lettuce",
-    label: "Crisp lettuce",
-    art: (
-      <path
-        d="M30 304 Q46 284 62 304 T94 304 T126 304 T158 304 T190 304 T222 304 T254 304 T286 304 T318 304 T350 304 T370 304 L366 318 H34 Z"
-        fill="#fff"
-        stroke={R}
-        strokeWidth="5"
-        strokeLinejoin="round"
-      />
-    ),
-  },
-  {
-    key: "patty",
-    label: "Crispy patty",
-    art: (
-      <>
-        <rect x="40" y="252" width="320" height="42" rx="21" fill={R} />
-        <path d="M96 273 h34 M182 273 h34 M268 273 h34" stroke="#fff" strokeWidth="5" strokeLinecap="round" />
-      </>
-    ),
-  },
-  {
-    key: "cheese",
-    label: "Melted cheese",
-    art: (
-      <path
-        d="M32 236 H368 L358 254 H306 L296 272 L286 254 H130 L120 270 L110 254 H42 Z"
-        fill="#fff"
-        stroke={R}
-        strokeWidth="5"
-        strokeLinejoin="round"
-      />
-    ),
-  },
-  {
-    key: "pickles",
-    label: "Pickles",
-    art: (
-      <>
-        {[110, 160, 210, 260, 304].map((x) => (
-          <circle key={x} cx={x} cy="226" r="10" fill={R} stroke="#fff" strokeWidth="3" />
-        ))}
-      </>
-    ),
-  },
-  {
-    key: "top-bun",
-    label: "Top bun",
-    art: (
-      <>
-        <path d="M40 222 C40 140 118 108 200 108 C282 108 360 140 360 222 Z" fill="#fff" stroke={R} strokeWidth="6" />
-        <path d="M86 180 Q98 142 140 128" fill="none" stroke={R} strokeWidth="4" strokeLinecap="round" />
-        {[
-          [152, 152],
-          [200, 136],
-          [250, 152],
-          [176, 184],
-          [228, 184],
-        ].map(([x, y]) => (
-          <ellipse key={`${x}-${y}`} cx={x} cy={y} rx="7" ry="4" fill={R} />
-        ))}
-      </>
-    ),
-  },
-];
+const { top: VIEW_TOP, height: VIEW_H, width: VIEW_W } = BURGER_VIEW;
+const LABEL_X = 432; // drawing units, just right of the stage
+// Labels are evenly spaced (bottom bun lowest) so they never collide; leader lines connect
+// each label to its ingredient's real edge.
+const labelY = (i: number) => 380 - i * 40;
+const EXPLODE = 36; // vertical gap between exploded layers, drawing units
 
 /**
- * Desktop: pinned, scrubbed sequence. Layers start exploded and settle into the stack
- * as you scroll (and reverse on the way back up). Mobile / reduced motion: the finished
- * burger renders statically, with no pin.
+ * Desktop (≥1024px): pinned, scrubbed sequence synced to Lenis through ScrollTrigger.
+ * Layers start exploded along the burger axis and settle bottom-up; labels and leader lines
+ * stick on as each lands; the YEET sticker slaps on last. Scrolling up reverses it exactly.
+ * Mobile / reduced motion: the assembled burger renders statically with an ingredient list.
  */
 export function BurgerAssembly() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -107,58 +30,42 @@ export function BurgerAssembly() {
 
     const mm = gsap.matchMedia();
     mm.add("(min-width: 1024px)", () => {
-      const layers = gsap.utils.toArray<SVGGElement>("[data-layer]", stage);
+      const arts = gsap.utils.toArray<SVGGElement>("[data-layer]", stage);
+      const halos = gsap.utils.toArray<SVGGElement>("[data-halo]", stage);
       const labels = gsap.utils.toArray<HTMLElement>("[data-layer-label]", stage);
+      const leaders = gsap.utils.toArray<SVGGElement>("[data-leader]", stage);
       const copy = gsap.utils.toArray<HTMLElement>("[data-stage-copy]", section);
-      const sticker = stage.querySelector<HTMLElement>("[data-big-bite]");
-      const mid = (layers.length - 1) / 2;
+      const shadow = stage.querySelector("[data-ground]");
+      const sticker = stage.querySelector("[data-yeet-sticker]");
+      const mid = (arts.length - 1) / 2;
+      const pair = (i: number) => [halos[i], arts[i]];
 
-      // Exploded composition: spread vertically around the centre, alternating sideways.
-      layers.forEach((el, i) => {
-        gsap.set(el, {
-          y: (i - mid) * -46,
-          x: i % 2 ? 34 : -34,
-          rotation: i % 2 ? 7 : -7,
-          transformOrigin: "50% 50%",
-        });
+      // Exploded composition: separated vertically along the shared axis, slight alternating tilt.
+      arts.forEach((_, i) => {
+        gsap.set(pair(i), { y: (i - mid) * -EXPLODE, x: i % 2 ? 18 : -18, rotation: i % 2 ? 4 : -4, svgOrigin: "200 220" });
       });
-      gsap.set(labels, { opacity: 0 });
+      gsap.set([...labels, ...leaders], { opacity: 0 });
       gsap.set(copy.slice(1), { opacity: 0 });
+      if (shadow) gsap.set(shadow, { opacity: 0, scaleX: 0.5, svgOrigin: "200 390" });
       if (sticker) gsap.set(sticker, { opacity: 0 });
 
       const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: "top top",
-          end: "+=200%",
-          pin: true,
-          scrub: 0.6,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-        },
+        defaults: { ease: "power2.inOut" },
+        scrollTrigger: { trigger: section, start: "top top", end: "+=160%", pin: true, scrub: 0.6, anticipatePin: 1, invalidateOnRefresh: true },
       });
-
-      // Ingredients descend and settle, bottom layer first.
-      layers.forEach((el, i) => {
-        tl.to(el, { y: 0, x: 0, rotation: 0, duration: 1, ease: "power2.inOut" }, i * 0.12);
-      });
-      // Labels stick on as each layer lands.
-      labels.forEach((el, i) => {
-        tl.fromTo(el, { opacity: 0, x: 16 }, { opacity: 1, x: 0, duration: 0.35 }, 0.6 + i * 0.12);
-      });
-      // Typography follows the stage.
+      // 1–2: ingredients descend into place, bottom-up.
+      arts.forEach((_, i) => tl.to(pair(i), { y: 0, x: 0, rotation: 0, duration: 1 }, i * 0.14));
+      // 3: labels and leader lines attach as each layer lands.
+      arts.forEach((_, i) => tl.fromTo([labels[i], leaders[i]], { opacity: 0, x: 12 }, { opacity: 1, x: 0, duration: 0.3, ease: "power2.out" }, 0.75 + i * 0.14));
+      if (shadow) tl.to(shadow, { opacity: 1, scaleX: 1, duration: 0.8 }, 1.0);
+      // 4: copy follows the stage.
       tl.to(copy[0], { opacity: 0, duration: 0.25 }, 0.9).to(copy[1], { opacity: 1, duration: 0.25 }, 1.0);
-      tl.to(copy[1], { opacity: 0, duration: 0.25 }, 1.8).to(copy[2], { opacity: 1, duration: 0.25 }, 1.9);
-      // The finished burger gets its sticker.
+      tl.to(copy[1], { opacity: 0, duration: 0.25 }, 1.9).to(copy[2], { opacity: 1, duration: 0.25 }, 2.0);
+      // 5: the YEET sticker slaps onto the finished burger.
       if (sticker) {
-        tl.fromTo(
-          sticker,
-          { opacity: 0, scale: 1.8, rotation: -22 },
-          { opacity: 1, scale: 1, rotation: -8, duration: 0.45, ease: "power4.out" },
-          2.0,
-        );
+        tl.fromTo(sticker, { opacity: 0, scale: 1.8, rotation: -24 }, { opacity: 1, scale: 1, rotation: -8, duration: 0.4, ease: "power4.out" }, 2.1);
       }
-      tl.to({}, { duration: 0.5 });
+      tl.to({}, { duration: 0.4 });
     });
 
     return () => mm.revert();
@@ -175,67 +82,91 @@ export function BurgerAssembly() {
       <div className="mx-auto grid h-full max-w-[1440px] grid-cols-[minmax(0,1fr)] items-center gap-12 px-5 py-20 md:px-10 lg:grid-cols-12 lg:py-0">
         <div className="lg:col-span-5">
           <h2 id="assembly-title" className="font-display text-[clamp(3rem,8vw,7.5rem)] uppercase leading-[0.85] text-white">
-            Built for<br />the bite.
+            Built for
+            <br />
+            the bite.
           </h2>
-          <div className="relative mt-8 min-h-[8rem] font-body text-lg text-white/90 md:text-xl">
+          <div className="relative mt-8 font-body text-lg text-white md:text-xl lg:min-h-[8rem]">
             <p data-stage-copy className="max-w-md lg:absolute lg:inset-x-0 lg:top-0">
-              Ingredients drop in, one at a time. Placeholder copy: replace with the real build story.
+              Eight layers, one axis. Scroll and watch every ingredient drop into place.
             </p>
-            {/* Supplementary stage captions: start transparent, revealed only by the scroll timeline */}
+            {/* Supplementary captions: start transparent, revealed only by the scroll timeline */}
             <p data-stage-copy aria-hidden="true" className="hidden max-w-md opacity-0 lg:absolute lg:inset-x-0 lg:top-0 lg:block">
-              Every layer settles where it belongs. Crisp, sauced, stacked.
+              Cheese melts over the patty, tomato and onion stack up, the sesame bun lands last.
             </p>
             <p data-stage-copy aria-hidden="true" className="hidden max-w-md font-display text-3xl uppercase opacity-0 lg:absolute lg:inset-x-0 lg:top-0 lg:block">
-              Your move. Big bite.
+              Stacked. Sauced. YEET&apos;d.
             </p>
           </div>
-          <p className="mt-6 font-body text-xs text-white/70">Ingredient layers and labels are placeholder illustrations.</p>
+          <p className="mt-6 font-body text-sm text-white">Illustrated build. The ingredient list is a sample until the real recipe is supplied.</p>
         </div>
 
         <div className="lg:col-span-7">
-          <div ref={stageRef} className="relative mx-auto w-full max-w-[480px] lg:ml-[6%] lg:mr-0">
+          <div ref={stageRef} className="relative mx-auto w-full max-w-[400px] lg:ml-[4%] lg:mr-0 lg:w-[min(440px,50svh)] lg:max-w-none">
             <svg
-              viewBox={`0 ${VIEW_TOP} 400 ${VIEW_H}`}
+              viewBox={`0 ${VIEW_TOP} ${VIEW_W} ${VIEW_H}`}
               className="block h-auto w-full overflow-visible"
               role="img"
-              aria-label="Illustrated burger: bottom bun, sauce, lettuce, patty, cheese, pickles and top bun"
+              aria-label="Illustrated burger, top to bottom: sesame bun, lettuce, tomato, red onion, cheddar, beef patty, lettuce, toasted bun"
             >
-              {LAYERS.map((layer) => (
-                <g key={layer.key} data-layer>
-                  <g className="layer-halo">{layer.art}</g>
-                  {layer.art}
-                </g>
-              ))}
+              <ellipse data-ground cx="200" cy="390" rx="150" ry="9" fill="#5a0000" opacity="0.35" />
+              {/* White die-cut halos sit behind all the art: separate outlines when exploded,
+                  one continuous sticker outline once assembled. */}
+              <g>
+                {BURGER_LAYERS.map((layer) => (
+                  <g key={layer.key} data-halo className="layer-halo">
+                    {layer.art}
+                  </g>
+                ))}
+              </g>
+              <g>
+                {BURGER_LAYERS.map((layer) => (
+                  <g key={layer.key} data-layer>
+                    {layer.art}
+                  </g>
+                ))}
+              </g>
+              {/* Leader lines (desktop) */}
+              <g className="hidden lg:inline" aria-hidden="true">
+                {BURGER_LAYERS.map((layer, i) => {
+                  const [ax, ay] = layer.anchor;
+                  const ly = labelY(i);
+                  return (
+                    <g key={layer.key} data-leader>
+                      <polyline points={`${ax},${ay} ${LABEL_X - 22},${ly} ${LABEL_X - 4},${ly}`} fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      <circle cx={ax} cy={ay} r="4" fill="#fff" />
+                    </g>
+                  );
+                })}
+              </g>
             </svg>
 
-            {LAYERS.map((layer, i) => (
+            {BURGER_LAYERS.map((layer, i) => (
               <span
                 key={layer.key}
                 data-layer-label
                 aria-hidden="true"
-                className="sticker-label absolute left-full ml-4 hidden -translate-y-1/2 whitespace-nowrap rounded-full bg-white px-3 py-1 text-xs text-brand shadow-md lg:block"
-                // Evenly spaced from top bun (8%) to bottom bun (92%) so labels never collide.
-                style={{ top: `${8 + ((LAYERS.length - 1 - i) / (LAYERS.length - 1)) * 84}%` }}
+                className="sticker-label absolute hidden -translate-y-1/2 whitespace-nowrap bg-white px-3 py-1 text-xs text-brand [border-radius:10px_4px_9px_5px] lg:block"
+                style={{ left: `${(LABEL_X / VIEW_W) * 100}%`, top: `${((labelY(i) - VIEW_TOP) / VIEW_H) * 100}%` }}
               >
-                {String(i + 1).padStart(2, "0")} · {layer.label}
+                {layer.label}
               </span>
             ))}
 
-            <div
-              data-big-bite
-              className="sticker-label absolute -left-2 -top-10 z-10 flex h-24 w-24 -rotate-6 items-center justify-center rounded-full bg-white text-center text-sm text-brand ring-4 ring-brand md:h-32 md:w-32 md:text-base"
-            >
-              Big<br />bite!
+            <div data-yeet-sticker className="absolute -top-[10%] left-0 z-10 w-[30%] -rotate-[8deg] lg:-left-[12%] lg:w-[34%]">
+              <Image src="/brand/yeet-logo.png" alt="" width={1080} height={579} sizes="160px" className="logo-die-cut h-auto w-full" />
             </div>
           </div>
 
-          <ol className="mt-10 flex flex-wrap justify-center gap-2 lg:hidden" aria-label="Ingredients, top to bottom">
-            {[...LAYERS].reverse().map((l) => (
-              <li key={l.key} className="sticker-label rounded-full bg-white px-3 py-1.5 text-xs text-brand">
+          {/* Mobile: the ingredient list as plain editorial text */}
+          <p className="mx-auto mt-10 max-w-md text-center font-display text-sm uppercase leading-relaxed tracking-wide text-white lg:hidden">
+            {[...BURGER_LAYERS].reverse().map((l, i, arr) => (
+              <span key={l.key}>
                 {l.label}
-              </li>
+                {i < arr.length - 1 ? <span aria-hidden="true"> · </span> : null}
+              </span>
             ))}
-          </ol>
+          </p>
         </div>
       </div>
     </section>

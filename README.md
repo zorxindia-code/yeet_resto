@@ -19,7 +19,7 @@ npm run lint
 | Route   | What it is |
 | ------- | ---------- |
 | `/`     | Homepage: preloader → hero → marquee → categories → featured → sticker-to-reality reveal → burger assembly → brand story → takeaway bag → offers → gallery → location → sticker playground footer |
-| `/menu` | Menu browser: sticky category tabs, search, filters, product detail dialog. Deep links: `/menu?cat=burgers` (`chicken`, `pizza`, `sides`, `popcorn`, `drinks`) |
+| `/menu` | Fully prerendered menu grouped by category: sticky category tabs, search, filters (bestsellers, spicy, available now), product dialog. Deep links: `/menu?cat=burgers` (`chicken`, `pizza`, `sides`, `popcorn`, `drinks`) |
 
 ## Replacing placeholders
 
@@ -27,18 +27,26 @@ Everything marked *placeholder* on the site is meant to be swapped. None of it c
 
 | What | Where |
 | ---- | ----- |
-| Food, lifestyle and gallery photos | Put files in `public/images/…`, then set paths in `lib/assets.ts`. Each `PhotoPlaceholder` renders the real photo once its slot has a path. |
-| Address, hours, phone, email, order/maps/WhatsApp/social links | `lib/site.ts`, or the `NEXT_PUBLIC_*` env vars it reads |
-| Menu items, prices, dietary info | `lib/menu.ts` (`price: null` shows "PRICE TBA") |
+| Menu (24 demo products: names, descriptions, sample prices, photos, bestseller, spice level, availability) | `lib/menu.ts`, the single source for the homepage and `/menu` |
+| Hero cutouts, reveal photo, lifestyle and gallery photos | `lib/assets.ts` (files in `public/images/…`) |
+| Photo credits for the current demo photography | `public/images/CREDITS.md` |
+| Address, hours, phone, email, currency, order/maps/WhatsApp/social links | `lib/site.ts`, or the `NEXT_PUBLIC_*` env vars it reads |
 | Offers | `components/OffersSection.tsx` |
 | Brand story copy | `components/BrandExperience.tsx` |
-| Burger ingredient layers | `components/BurgerAssembly.tsx` (`LAYERS`, bottom → top) |
+| Illustrated burger layers (scroll assembly) | `components/illustrations/BurgerLayers.tsx` (`BURGER_LAYERS`, bottom → top) |
 | Takeaway bag artwork | `components/TakeawayBagExperience.tsx` (`TakeawayBag`) |
+
+### Demo photography
+
+All food, lifestyle and gallery photos are **temporary CC0 stand-ins** (StockSnap and rawpixel via Openverse), downloaded,
+re-encoded to WebP and served at responsive sizes as AVIF/WebP by `next/image`. Hero cutouts are transparent WebP, lifted
+locally with Apple's Vision framework. Swap in YEET's own photography before launch; see `public/images/CREDITS.md`.
 
 ### Environment variables (all optional)
 
 ```
 NEXT_PUBLIC_SITE_URL       # canonical URL for metadata
+NEXT_PUBLIC_CURRENCY       # price prefix for the demo menu (defaults to $)
 NEXT_PUBLIC_ORDER_URL      # "Order now" buttons (defaults to /menu)
 NEXT_PUBLIC_MAPS_URL
 NEXT_PUBLIC_DIRECTIONS_URL
@@ -61,5 +69,7 @@ NEXT_PUBLIC_TIKTOK_URL
 - Pinned sequences (burger assembly, takeaway bag) run at ≥1024px only. Phones get a static composition.
 - `prefers-reduced-motion` skips the preloader, entrance animations, pins and the marquee. All content stays visible.
 - Entrance animations use `fromTo` on wrapper elements without CSS transitions, so they never fight hover transitions.
+- The hero burger is the LCP image: it loads eagerly at high priority and is never hidden with opacity.
+- The footer sticker playground (and GSAP Draggable) is lazy-loaded when it nears the viewport.
 # yeet_resto
 # yeet_resto

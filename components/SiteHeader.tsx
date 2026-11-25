@@ -50,7 +50,7 @@ export function SiteHeader() {
 
   const solid = compact || !isHome;
   const textTone = solid ? "text-ink" : onRed ? "text-white" : "text-ink";
-  const barTone = solid ? "bg-white/95 shadow-[0_1px_0_rgba(0,0,0,0.08)] backdrop-blur-sm" : "bg-transparent";
+  const barTone = solid ? "bg-white shadow-[0_1px_0_rgba(0,0,0,0.08)]" : "bg-transparent";
 
   return (
     <>
@@ -62,7 +62,8 @@ export function SiteHeader() {
               alt={SITE.name}
               width={1080}
               height={579}
-              priority
+              loading="eager"
+              sizes="128px"
               className={`w-auto transition-[height] duration-300 ${solid ? "h-11" : "h-14 md:h-16"}`}
             />
           </SmartLink>

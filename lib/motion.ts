@@ -1,13 +1,18 @@
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Draggable } from "gsap/Draggable";
 
 let registered = false;
 
-/** Registers GSAP plugins once. Safe to call from any client component. */
+/**
+ * Registers ScrollTrigger once. Safe to call from any client component.
+ * (Draggable is registered by the footer playground only, so it stays out of the main bundle.)
+ */
 export function registerGsap() {
   if (typeof window === "undefined" || registered) return;
-  gsap.registerPlugin(ScrollTrigger, Draggable);
+  gsap.registerPlugin(ScrollTrigger);
+  // Mobile browsers resize the viewport when the address bar shows/hides; refreshing on that
+  // would recalculate pins mid-scroll and cause jumps.
+  ScrollTrigger.config({ ignoreMobileResize: true });
   registered = true;
 }
 
@@ -27,4 +32,4 @@ export const STICKER = {
   stagger: 0.09,
 } as const;
 
-export { gsap, ScrollTrigger, Draggable };
+export { gsap, ScrollTrigger };

@@ -7,6 +7,8 @@ export const SITE = {
   name: "YEET RESTO CAFÉ",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://example.com",
   tagline: "Big bites. Bold flavours. Good moods.",
+  // Prefix for the demo menu's sample prices. Set to the real currency before launch.
+  currency: process.env.NEXT_PUBLIC_CURRENCY ?? "$",
   // PLACEHOLDER — replace with real values
   address: "PLACEHOLDER — add street address",
   hours: "PLACEHOLDER — add opening hours",

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { gsap, registerGsap } from "@/lib/motion";
 import { FoodIcon, type FoodIconName } from "@/components/icons/FoodIcons";
@@ -58,7 +59,7 @@ function peelClips(p: number) {
   return { remain: toClip(remain), flap: toClip(flap), origin: `50% ${(boundary(0.5, p) * 100).toFixed(2)}%` };
 }
 
-const LOGO_MASK = `url(${LOGO_SRC})`;
+const LOGO_SIZES = "(min-width: 940px) 620px, 66vw";
 
 export function StickerPreloader() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -172,19 +173,25 @@ export function StickerPreloader() {
 
       <div className="relative z-10 flex flex-col items-center gap-8">
         <div className="logo-die-cut" style={{ perspective: 1100 }}>
-          <div data-logo className="relative w-[min(82vw,620px)]" style={{ aspectRatio: ASPECT }}>
+          <div data-logo className="relative w-[min(66vw,620px)]" style={{ aspectRatio: ASPECT }}>
             <div data-shadow className="absolute inset-x-10 -bottom-7 h-8 rounded-[50%] bg-black/30 blur-md" />
             <div data-remain className="absolute inset-0" style={{ clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)" }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={LOGO_SRC} alt="" className="h-full w-full" draggable={false} />
+              <Image src={LOGO_SRC} alt="" width={1080} height={579} sizes={LOGO_SIZES} loading="lazy" className="h-full w-full" draggable={false} />
             </div>
             <div data-flap className="absolute inset-0" style={{ transformStyle: "preserve-3d" }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={LOGO_SRC} alt="" className="h-full w-full" draggable={false} />
-              <div
+              <Image src={LOGO_SRC} alt="" width={1080} height={579} sizes={LOGO_SIZES} loading="lazy" className="h-full w-full" draggable={false} />
+              {/* Adhesive backside: the same artwork flattened to a light-grey silhouette */}
+              <Image
                 data-back
-                className="logo-backside absolute inset-0 bg-[#f1efee]"
-                style={{ WebkitMaskImage: LOGO_MASK, maskImage: LOGO_MASK, opacity: 0 }}
+                src={LOGO_SRC}
+                alt=""
+                width={1080}
+                height={579}
+                sizes={LOGO_SIZES}
+                loading="lazy"
+                className="absolute inset-0 h-full w-full"
+                style={{ filter: "brightness(0) invert(0.94)", opacity: 0 }}
+                draggable={false}
               />
             </div>
           </div>

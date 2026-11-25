@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { ScrollTrigger, registerGsap, prefersReducedMotion } from "@/lib/motion";
 import { BurgerIllustration } from "@/components/illustrations/BurgerIllustration";
-import { PhotoPlaceholder } from "@/components/PhotoPlaceholder";
+import { Photo } from "@/components/Photo";
 import { PHOTOS } from "@/lib/assets";
 
 /**
@@ -114,13 +114,13 @@ export function StickerRealityReveal() {
             data-cursor="peel"
             className="relative mx-auto w-full max-w-[560px] cursor-ew-resize touch-none select-none overflow-hidden rounded-[36px] bg-white shadow-[0_30px_50px_-30px_rgba(0,0,0,0.45)] [--p:0.12] focus-visible:outline-brand"
           >
-            <PhotoPlaceholder
+            <Photo
               src={PHOTOS.revealBurger}
               alt="The real YEET burger"
               label="Real burger photo, same angle and framing as the illustration"
-              ratio="4 / 5"
+              ratio="1 / 1"
               className="block h-auto w-full rounded-[36px]"
-              sizes="(min-width: 1024px) 45vw, 90vw"
+              sizes="(min-width: 1024px) 560px, 90vw"
             />
 
             {/* Illustrated sticker layer, clipped from the left by --p */}

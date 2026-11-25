@@ -113,7 +113,7 @@ export function FullscreenNavigation({ open, onClose }: Props) {
                   data-cursor="explore"
                   className="sticker-label inline-flex items-baseline gap-4 py-1 text-[clamp(3rem,11vw,8rem)] text-brand transition-transform duration-300 ease-out hover:-rotate-2 hover:translate-x-2 focus-visible:-rotate-2"
                 >
-                  <span className="font-body text-sm text-ink/50">0{i + 1}</span>
+                  <span className="font-body text-sm text-ink/70">0{i + 1}</span>
                   {item.label}
                 </SmartLink>
               </li>

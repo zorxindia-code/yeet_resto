@@ -33,11 +33,13 @@ export function AnimatedMarquee() {
     const section = sectionRef.current;
     if (!track || !section || prefersReducedMotion()) return;
 
-    const tween = gsap.to(track, { xPercent: -50, ease: "none", duration: 24, repeat: -1 });
+    // Starts paused; only runs while the strip is on screen.
+    const tween = gsap.to(track, { xPercent: -50, ease: "none", duration: 24, repeat: -1, paused: true });
     const st = ScrollTrigger.create({
       trigger: section,
       start: "top bottom",
       end: "bottom top",
+      onToggle: (self) => (self.isActive ? tween.play() : tween.pause()),
       onUpdate: (self) => {
         const v = Math.abs(self.getVelocity());
         const dir = self.direction === -1 ? -1 : 1;

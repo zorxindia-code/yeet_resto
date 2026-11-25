@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { gsap, registerGsap, prefersReducedMotion } from "@/lib/motion";
 import { FoodIcon, type FoodIconName } from "@/components/icons/FoodIcons";
-import { PhotoPlaceholder } from "@/components/PhotoPlaceholder";
+import { Photo } from "@/components/Photo";
 import { PHOTOS } from "@/lib/assets";
 import { StickerButton } from "@/components/StickerButton";
 import { SITE } from "@/lib/site";
@@ -20,12 +20,12 @@ type Tile = {
 // Placeholder social content, not customer posts.
 // Spans tile a 6×3 grid on desktop and a 2-column grid on mobile (with dense packing).
 const TILES: Tile[] = [
-  { label: "Lifestyle: friends at a window table", caption: "Placeholder caption", span: "col-span-2 row-span-2 md:col-span-3 md:row-span-2", rot: -1.5, icon: "burger" },
-  { label: "Food: fries close-up", caption: "Crunch check", span: "col-span-1 md:col-span-2", rot: 2.5, icon: "fries" },
-  { label: "Restaurant ambience at night", caption: "Night shift", span: "col-span-1 row-span-2 md:col-span-1 md:row-span-2", rot: -2, icon: "popcorn" },
-  { label: "Video thumbnail: kitchen moment", caption: "Video loop", span: "col-span-1 md:col-span-2", rot: 1.5, video: true },
-  { label: "Customer moment (placeholder)", caption: "Good mood", span: "col-span-2 md:col-span-3", rot: -1, icon: "juice" },
-  { label: "Food: pizza slice pull", caption: "Slice o'clock", span: "col-span-2 md:col-span-3", rot: 1.5, icon: "pizza" },
+  { label: "Guest taking a big burger bite", caption: "First bite", span: "col-span-2 row-span-2 md:col-span-3 md:row-span-2", rot: -1.5, icon: "burger" },
+  { label: "Fries dipped in ketchup", caption: "Crunch check", span: "col-span-1 md:col-span-2", rot: 2.5, icon: "fries" },
+  { label: "Warm café interior at night", caption: "Night shift", span: "col-span-1 row-span-2 md:col-span-1 md:row-span-2", rot: -2, icon: "popcorn" },
+  { label: "Chef at the stove, steam rising", caption: "Kitchen cam", span: "col-span-1 md:col-span-2", rot: 1.5, video: true },
+  { label: "Guest enjoying a burger", caption: "Good mood", span: "col-span-2 md:col-span-3", rot: -1, icon: "juice" },
+  { label: "Pizza night with friends", caption: "Slice o'clock", span: "col-span-2 md:col-span-3", rot: 1.5, icon: "pizza" },
 ];
 
 /** Asymmetric sticker-collage gallery. Images are placeholders until real social content is supplied. */
@@ -76,9 +76,9 @@ export function SocialGallery() {
             >
               <div className="relative h-full rounded-[22px] bg-white p-2 shadow-[0_16px_24px_-18px_rgba(0,0,0,0.5)] transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:rotate-0">
                 <div className="relative h-full overflow-hidden rounded-[16px]">
-                  <PhotoPlaceholder
+                  <Photo
                     src={PHOTOS.gallery[i]}
-                    alt={tile.caption}
+                    alt={tile.label}
                     label={tile.label}
                     ratio="auto"
                     className="h-full w-full"
@@ -100,7 +100,7 @@ export function SocialGallery() {
             </li>
           ))}
         </ul>
-        <p className="mt-6 font-body text-sm text-white/75">Placeholder social content. Not customer posts. Replace with approved content.</p>
+        <p className="mt-6 font-body text-sm text-white">Placeholder social content. Not customer posts. Replace with approved content.</p>
       </div>
     </section>
   );

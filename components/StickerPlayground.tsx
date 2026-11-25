@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import { useEffect, useRef } from "react";
-import { gsap, Draggable, registerGsap, prefersReducedMotion, ScrollTrigger } from "@/lib/motion";
+import { Draggable } from "gsap/Draggable";
+import { gsap, registerGsap, prefersReducedMotion, ScrollTrigger } from "@/lib/motion";
 import { FoodIcon, type FoodIconName } from "@/components/icons/FoodIcons";
 
 type Sticker =
@@ -41,6 +42,7 @@ export function StickerPlayground() {
 
   useEffect(() => {
     registerGsap();
+    gsap.registerPlugin(Draggable);
     const canvas = canvasRef.current;
     const logo = logoRef.current;
     if (!canvas || !logo) return;
@@ -187,7 +189,7 @@ export function StickerPlayground() {
 
         {/* Oversized logo: non-draggable, sits behind the stickers */}
         <div ref={logoRef} className="pointer-events-none absolute left-1/2 top-1/2 z-[1] w-[min(72%,620px)] -translate-x-1/2 -translate-y-1/2 select-none">
-          <Image src="/brand/yeet-logo.png" alt="" width={1080} height={579} className="sticker-edge h-auto w-full" />
+          <Image src="/brand/yeet-logo.png" alt="" width={1080} height={579} sizes="(min-width: 900px) 620px, 72vw" className="sticker-edge h-auto w-full" />
         </div>
 
         {STICKERS.map((s) => {

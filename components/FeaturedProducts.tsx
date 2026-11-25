@@ -1,30 +1,19 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { gsap, registerGsap, prefersReducedMotion } from "@/lib/motion";
-import { PRODUCTS, CATEGORIES } from "@/lib/menu";
+import { FEATURED, categoryById, formatPrice } from "@/lib/menu";
 import { FoodIcon } from "@/components/icons/FoodIcons";
-import { PhotoPlaceholder } from "@/components/PhotoPlaceholder";
-import { PHOTOS } from "@/lib/assets";
+import { Photo } from "@/components/Photo";
+import { SmartLink } from "@/components/SmartLink";
+import { SpiceMeter } from "@/components/SpiceMeter";
 import { FoodIconPattern } from "@/components/FoodIconPattern";
 
-const FEATURED = PRODUCTS.filter((p) => p.featured);
-
-function Heat({ level = 0 }: { level?: number }) {
-  if (!level) return null;
-  return (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 font-display text-xs uppercase tracking-wide text-brand" aria-label={`Spicy level ${level} of 3`}>
-      Spicy
-      <span aria-hidden="true" className="flex gap-0.5">
-        {[1, 2, 3].map((n) => (
-          <span key={n} className={`h-2 w-2 rounded-full ${n <= level ? "bg-brand" : "bg-brand/25"}`} />
-        ))}
-      </span>
-    </span>
-  );
-}
-
+/**
+ * "Love at first bite": a vertical editorial list. Each featured product is one row
+ * (photo + text) whose sides alternate on desktop and stack photo-first on mobile.
+ * The layout is driven entirely by the data, so any number of featured items stays aligned.
+ */
 export function FeaturedProducts() {
   const ref = useRef<HTMLElement>(null);
 
@@ -32,84 +21,82 @@ export function FeaturedProducts() {
     registerGsap();
     const root = ref.current;
     if (!root || prefersReducedMotion()) return;
-    const cards = gsap.utils.toArray<HTMLElement>("[data-product]", root);
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        cards,
-        { y: 100, opacity: 0, rotation: (i: number) => (i % 2 ? 3 : -3) },
-        {
-          y: 0,
-          opacity: 1,
-          rotation: 0,
-          duration: 1,
-          ease: "power3.out",
-          stagger: 0.12,
-          clearProps: "transform",
-          scrollTrigger: { trigger: root, start: "top 72%", once: true },
-        },
-      );
+      gsap.utils.toArray<HTMLElement>("[data-feature]", root).forEach((row) => {
+        const photo = row.querySelector("[data-feature-photo]");
+        const text = row.querySelector("[data-feature-text]");
+        const tl = gsap.timeline({ scrollTrigger: { trigger: row, start: "top 78%", once: true } });
+        tl.fromTo(photo, { y: 80, opacity: 0, rotation: -4 }, { y: 0, opacity: 1, rotation: 0, duration: 0.9, ease: "power3.out", clearProps: "transform" })
+          .fromTo(text, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: "power3.out", clearProps: "transform" }, 0.15);
+      });
     }, root);
     return () => ctx.revert();
   }, []);
 
   return (
-    <section ref={ref} id="featured" data-surface="red" aria-labelledby="featured-title" className="surface-red paper-texture relative overflow-hidden py-24 md:py-36">
+    <section ref={ref} id="featured" data-surface="red" aria-labelledby="featured-title" className="surface-red paper-texture relative overflow-hidden py-24 md:py-32">
       <FoodIconPattern tone="red" />
-      <div className="relative mx-auto max-w-[1440px] px-5 md:px-10">
-        <h2 id="featured-title" className="relative z-10 font-display text-[clamp(3.2rem,10vw,10rem)] uppercase leading-[0.84] text-white">
-          Love at<br />
-          <span className="inline-block -rotate-2 md:ml-[12%]">first bite.</span>
-        </h2>
-        <p className="mt-8 max-w-sm font-body text-white/85 md:ml-[12%]">
-          Signature picks from the sample menu. Names, descriptions and prices are placeholders until real items are supplied.
-        </p>
+      <div className="relative mx-auto max-w-[1280px] px-5 md:px-10">
+        <header className="max-w-3xl">
+          <h2 id="featured-title" className="font-display text-[clamp(3.2rem,9vw,8.5rem)] uppercase leading-[0.84] text-white">
+            Love at
+            <br />
+            <span className="inline-block -rotate-2">first bite.</span>
+          </h2>
+          <p className="mt-6 max-w-md font-body text-lg text-white">
+            Three signature picks from our demo menu. Names, prices and descriptions are samples until the real menu lands.
+          </p>
+        </header>
 
-        <ul className="mt-14 grid grid-cols-[minmax(0,1fr)] gap-10 md:grid-cols-12 md:gap-6">
+        <ol className="mt-16 flex flex-col gap-20 md:mt-24 md:gap-28">
           {FEATURED.map((p, i) => {
-            const cat = CATEGORIES.find((c) => c.id === p.category);
-            const layout =
-              i === 0 ? "md:col-span-6" : i === 1 ? "md:col-span-4 md:col-start-8 md:mt-40" : "md:col-span-5 md:col-start-2 md:mt-10";
+            const flip = i % 2 === 1;
+            const category = categoryById(p.category);
             return (
-              <li key={p.id} data-product className={layout}>
-                <article className="group relative rounded-[32px] bg-white p-4 text-ink shadow-[0_30px_40px_-30px_rgba(0,0,0,0.5)] transition-transform duration-300 ease-out hover:-translate-y-2 hover:-rotate-1 md:p-5">
-                  {p.bestseller ? (
-                    <span
-                      className="sticker-label absolute -right-3 -top-4 z-10 flex h-24 w-24 -rotate-12 items-center justify-center rounded-full bg-brand text-center text-sm text-white ring-4 ring-white md:h-28 md:w-28"
-                    >
-                      Best<br />seller
-                    </span>
-                  ) : null}
-                  <div className="relative overflow-hidden rounded-[24px]">
-                    <PhotoPlaceholder
-                      src={PHOTOS.products[p.id]}
+              <li key={p.id} data-feature className="grid grid-cols-[minmax(0,1fr)] items-center gap-8 md:grid-cols-12 md:gap-10">
+                {/* Photo, presented as a printed shot with a white border */}
+                <div data-feature-photo className={`md:col-span-7 ${flip ? "md:order-2" : ""}`}>
+                  <div className={`group relative bg-white p-2 shadow-[0_30px_40px_-28px_rgba(0,0,0,0.6)] md:p-3 ${flip ? "md:rotate-[1.5deg]" : "md:-rotate-[1.5deg]"}`}>
+                    <Photo
+                      src={p.image}
                       alt={p.name}
-                      label={`${p.name}: realistic product photo`}
-                      ratio={i === 0 ? "5 / 4" : "4 / 5"}
-                      className="w-full transition-transform duration-700 group-hover:scale-[1.05]"
-                      sizes="(min-width: 768px) 40vw, 90vw"
+                      ratio="5 / 4"
+                      sizes="(min-width: 1280px) 700px, (min-width: 768px) 56vw, 92vw"
+                      imgClassName="transition-transform duration-700 ease-out group-hover:scale-[1.04]"
                     />
-                    <FoodIcon name={p.icon} className="absolute bottom-3 left-3 w-14 text-brand drop-shadow-sm md:w-16" title={`${p.name} icon`} />
+                    {p.bestseller ? (
+                      <span className="sticker-label die-cut absolute left-5 top-5 -rotate-6 bg-brand px-3 py-1.5 text-sm text-white md:left-7 md:top-7 md:text-base">
+                        Bestseller
+                      </span>
+                    ) : null}
+                    <FoodIcon name={p.icon} className="sticker-edge absolute bottom-4 right-4 w-14 md:bottom-6 md:right-6 md:w-20" />
                   </div>
-                  <div className="px-2 pb-2 pt-5">
-                    <p className="font-display text-xs uppercase tracking-[0.2em] text-brand">{cat?.name}</p>
-                    <h3 className="mt-1 font-display text-3xl uppercase leading-none text-ink md:text-4xl">{p.name}</h3>
-                    <p className="mt-3 font-body text-sm text-ink/75">{p.description}</p>
-                    <div className="mt-4 flex flex-wrap items-center gap-2">
-                      <span className="rounded-full bg-paper px-3 py-1 font-display text-sm text-brand">{p.price ?? "PRICE TBA"}</span>
-                      <Heat level={p.spicy} />
-                      {p.dietary.map((d) => (
-                        <span key={d} className="rounded-full border border-ink/15 px-3 py-1 font-body text-xs text-ink/65">{d}</span>
-                      ))}
-                    </div>
-                    <Link href={`/menu?cat=${p.category}`} className="mt-5 inline-flex font-display text-sm uppercase tracking-wide text-brand underline-offset-4 hover:underline" data-cursor="explore">
-                      See in menu →
-                    </Link>
-                  </div>
-                </article>
+                </div>
+
+                {/* Text */}
+                <div data-feature-text className={`relative md:col-span-5 ${flip ? "md:order-1" : ""}`}>
+                  <span aria-hidden="true" className="block font-display text-[5rem] leading-[0.8] text-transparent [-webkit-text-stroke:2px_rgba(255,255,255,0.6)] md:text-[7rem]">
+                    0{i + 1}
+                  </span>
+                  <p className="mt-4 font-display text-sm uppercase tracking-[0.25em] text-white">{category.name}</p>
+                  <h3 className="mt-3 font-display text-[clamp(2.4rem,4.6vw,4rem)] uppercase leading-[0.9] text-white">{p.name}</h3>
+                  <p className="mt-4 max-w-sm font-body text-lg text-white">{p.description}</p>
+                  <p className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 font-display text-lg uppercase text-white">
+                    <span className="text-3xl">{formatPrice(p.price)}</span>
+                    <SpiceMeter level={p.spicy} tone="white" />
+                  </p>
+                  <SmartLink
+                    href={`/menu?cat=${p.category}`}
+                    data-cursor="explore"
+                    className="mt-8 inline-flex items-center gap-2 border-b-2 border-white pb-1 font-display text-lg uppercase text-white transition-[gap] duration-300 hover:gap-4"
+                  >
+                    See it on the menu <span aria-hidden="true">→</span>
+                  </SmartLink>
+                </div>
               </li>
             );
           })}
-        </ul>
+        </ol>
       </div>
     </section>
   );

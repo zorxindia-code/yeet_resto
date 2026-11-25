@@ -103,12 +103,6 @@ html.lenis, html.lenis body { height: auto; }
 .intro-overlay { display: none; }
 html[data-intro="play"] .intro-overlay { display: block; }
 .peel-perspective { perspective: 1100px; transform-style: preserve-3d; }
-.logo-backside {
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-}
 
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {

@@ -70,7 +70,7 @@ function TakeawayBag() {
       </svg>
 
       <div className="absolute left-1/2 top-[37%] w-[70%] -translate-x-1/2">
-        <Image src="/brand/yeet-logo.png" alt="YEET RESTO CAFÉ logo on the takeaway bag" width={1080} height={579} className="h-auto w-full" />
+        <Image src="/brand/yeet-logo.png" alt="YEET RESTO CAFÉ logo on the takeaway bag" width={1080} height={579} sizes="(min-width: 1024px) 200px, 30vw" className="h-auto w-full" />
       </div>
       <div aria-hidden="true" className="absolute inset-x-[13%] top-[73%] flex items-center justify-between">
         {BAG_ICONS.map((icon) => (
@@ -163,11 +163,11 @@ export function TakeawayBagExperience() {
     >
       <div className="mx-auto grid max-w-[1440px] grid-cols-[minmax(0,1fr)] items-center gap-10 px-5 md:px-10 lg:h-full lg:grid-cols-12">
         <div className="lg:col-span-4">
-          <p className="font-display text-sm uppercase tracking-[0.25em] text-white/80">Takeaway</p>
+          <p className="font-display text-sm uppercase tracking-[0.25em] text-white">Takeaway</p>
           <h2 id="bag-title" className="mt-3 font-display text-[clamp(3rem,8vw,7.5rem)] uppercase leading-[0.85] text-white">
             Good mood.<br />To go.
           </h2>
-          <p className="mt-6 max-w-sm font-body text-lg text-white/90">
+          <p className="mt-6 max-w-sm font-body text-lg text-white">
             The YEET bag, packed and ready. Packaging art here is a stand-in until the final bag artwork and photos are supplied.
           </p>
           <div className="mt-8">
@@ -204,7 +204,7 @@ export function TakeawayBagExperience() {
             ))}
 
             <div data-bag-logo className="absolute right-[1%] top-[3%] z-[4] w-[30%]" style={{ transform: "rotate(-6deg)" }}>
-              <Image src="/brand/yeet-logo.png" alt="" width={1080} height={579} className="logo-die-cut h-auto w-full" />
+              <Image src="/brand/yeet-logo.png" alt="" width={1080} height={579} sizes="(min-width: 1024px) 200px, 30vw" className="logo-die-cut h-auto w-full" />
             </div>
           </div>
         </div>

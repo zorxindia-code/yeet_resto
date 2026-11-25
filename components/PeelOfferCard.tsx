@@ -48,11 +48,11 @@ export function PeelOfferCard({ offer, tilt }: { offer: Offer; tilt: number }) {
           className="absolute inset-0 flex flex-col bg-brand p-7 text-white"
           style={{ clipPath: peeled ? FRONT_PEELED : FRONT_FLAT, transition: `clip-path 700ms ${EASE}` }}
         >
-          <p className="font-display text-xs uppercase tracking-[0.2em] text-white/85">{offer.code}</p>
+          <p className="font-display text-xs uppercase tracking-[0.2em] text-white">{offer.code}</p>
           <h3 className="mt-3 max-w-[12ch] font-display text-4xl uppercase leading-[0.9] md:text-5xl">{offer.title}</h3>
           {/* Kept in the upper-left so the fold never covers offer text, peeled or not */}
-          <p className="mt-4 max-w-[58%] font-body text-base text-white/90">{offer.detail}</p>
-          <p className="mt-3 max-w-[58%] font-body text-xs text-white/75">{offer.terms}</p>
+          <p className="mt-4 max-w-[58%] font-body text-base text-white">{offer.detail}</p>
+          <p className="mt-3 max-w-[58%] font-body text-xs text-white">{offer.terms}</p>
         </div>
 
         {/* The lifted corner, rolled back over the sticker, casting a soft shadow */}

@@ -7,7 +7,7 @@ const R = "#DD0303";
 
 export function BurgerIllustration({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 400 500" className={className} aria-hidden="true" focusable="false">
+    <svg viewBox="0 50 400 400" className={className} aria-hidden="true" focusable="false">
       <ellipse cx="200" cy="418" rx="150" ry="13" fill={R} opacity="0.1" />
       <g stroke={R} strokeLinejoin="round" strokeLinecap="round">
         {/* bottom bun */}

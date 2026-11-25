@@ -1,27 +1,23 @@
-import type { CategoryId } from "@/lib/menu";
-
 /**
- * Real photography slots.
+ * Photography used outside the menu dataset (menu product photos live in lib/menu.ts).
  *
- * Every slot is empty until the real asset exists under /public. Set a path
- * (for example "/images/food/hero-burger.webp") and the matching <PhotoPlaceholder>
- * renders the optimised photo instead of the labelled placeholder. Layout and
- * animation code never needs to change.
+ * All current files are CC0 demo stand-ins (see public/images/CREDITS.md). Swap a path to
+ * YEET's own photography and every component using it updates; no layout or animation
+ * code needs to change. Cutouts are transparent WebP; keep transparency when replacing them.
  */
-type Slot = string | undefined;
+type Cutout = { src: string; width: number; height: number; alt: string };
 
-export const PHOTOS: {
-  heroBurger: Slot; // /images/food/hero-burger.webp, 1:1
-  revealBurger: Slot; // /images/food/reveal-burger.webp, 4:5, same framing as the sticker illustration
-  categories: Partial<Record<CategoryId, string>>; // /images/food/category-<id>.webp, 16:9 (burgers) or 4:3
-  products: Partial<Record<string, string>>; // /images/food/product-<id>.webp, 4:5 or 4:3
-  lifestyle: { room: Slot; crew: Slot; kitchen: Slot }; // /images/lifestyle/*.webp, 4:5
-  gallery: Slot[]; // /images/lifestyle/gallery-<n>.webp, in tile order
-} = {
-  heroBurger: undefined,
-  revealBurger: undefined,
-  categories: {},
-  products: {},
-  lifestyle: { room: undefined, crew: undefined, kitchen: undefined },
-  gallery: [],
+export const PHOTOS = {
+  hero: {
+    burger: { src: "/images/food/cutouts/burger.webp", width: 916, height: 646, alt: "Cheeseburger with tomato, cheese and crisp lettuce" },
+    drumstick: { src: "/images/food/cutouts/drumstick.webp", width: 1000, height: 503, alt: "Crispy fried chicken drumstick" },
+    fries: { src: "/images/food/cutouts/fries.webp", width: 740, height: 633, alt: "Cup of golden fries with herbs" },
+  } satisfies Record<string, Cutout>,
+  revealBurger: "/images/food/reveal-burger.webp",
+  lifestyle: {
+    room: "/images/lifestyle/room.webp",
+    crew: "/images/lifestyle/crew.webp",
+    kitchen: "/images/lifestyle/kitchen.webp",
+  },
+  gallery: [1, 2, 3, 4, 5, 6].map((n) => `/images/lifestyle/gallery-${n}.webp`),
 };

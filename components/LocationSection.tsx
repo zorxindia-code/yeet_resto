@@ -6,9 +6,9 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
 
 function Info({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <div className="rounded-[28px] bg-white p-6 shadow-[0_18px_26px_-22px_rgba(221,3,3,0.55)] ring-1 ring-brand/10">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-2 border-t-2 border-brand/15 py-6 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-6">
       <h3 className="font-display text-sm uppercase tracking-[0.2em] text-brand">{title}</h3>
-      <div className="mt-3 font-body text-lg text-ink">{children}</div>
+      <div className="font-body text-lg text-ink">{children}</div>
     </div>
   );
 }
@@ -34,8 +34,8 @@ export function LocationSection() {
           Placeholder details below. Add the real address, hours and links to lib/site.ts or the NEXT_PUBLIC_* environment variables.
         </p>
 
-        <div className="mt-14 grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-12">
-          <div className="grid grid-cols-[minmax(0,1fr)] gap-5 sm:grid-cols-2 lg:col-span-5 lg:grid-cols-1">
+        <div className="mt-14 grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-12 lg:gap-14">
+          <div className="border-b-2 border-brand/15 lg:col-span-5">
             <Info title="Address">{SITE.address}</Info>
             <Info title="Opening hours">{SITE.hours}</Info>
             <Info title="Contact">
@@ -44,10 +44,10 @@ export function LocationSection() {
               <a href={`mailto:${SITE.email}`} className="underline underline-offset-4" data-cursor="explore">{SITE.email}</a>
             </Info>
             <Info title="Services">
-              <ul className="flex flex-wrap gap-2 pt-1 font-body text-sm">
+              <ul className="flex flex-wrap gap-x-5 gap-y-1 font-body text-lg">
                 {["Dine-in", "Takeaway", "Delivery"].map((s) => (
-                  <li key={s} className="rounded-full border border-brand/30 px-3 py-1 text-brand">
-                    {s} <span className="text-ink/50">· TBC</span>
+                  <li key={s} className="text-ink">
+                    {s} <span className="text-ink/70">· TBC</span>
                   </li>
                 ))}
               </ul>

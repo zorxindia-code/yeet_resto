@@ -46,7 +46,7 @@ export default function Template({ children }: { children: ReactNode }) {
         aria-hidden="true"
         className="pointer-events-none fixed inset-0 z-[95] hidden items-center justify-center bg-brand"
       >
-        <Image src="/brand/yeet-logo.png" alt="" width={1080} height={579} className="logo-die-cut h-auto w-40 md:w-56" />
+        <Image src="/brand/yeet-logo.png" alt="" width={1080} height={579} sizes="224px" className="logo-die-cut h-auto w-40 md:w-56" />
       </div>
       {children}
     </>

@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { gsap, registerGsap, prefersReducedMotion } from "@/lib/motion";
 import { FoodIcon } from "@/components/icons/FoodIcons";
-import { PhotoPlaceholder } from "@/components/PhotoPlaceholder";
+import { Photo } from "@/components/Photo";
 import { PHOTOS } from "@/lib/assets";
 
 const PRINTS = [
@@ -59,9 +59,12 @@ export function BrandExperience() {
               <span className="text-ink">Loud moods.</span>
             </h2>
           </div>
-          <p className="font-body text-lg text-ink/80 md:col-span-4 md:col-start-9">
-            Placeholder brand story: a short line about the café, the crew and the kitchen. Replace with the real YEET story.
-          </p>
+          <div className="md:col-span-4 md:col-start-9">
+            <p className="font-body text-lg text-ink">
+              A loud little café for big bites, crunchy sides and good company. Come hungry, leave happy.
+            </p>
+            <p className="mt-3 font-body text-sm text-ink/70">Sample copy until the real YEET story is supplied.</p>
+          </div>
         </div>
 
         <div className="relative mt-20 grid grid-cols-[minmax(0,1fr)] gap-14 md:grid-cols-3 md:gap-8">
@@ -72,7 +75,7 @@ export function BrandExperience() {
               className={`relative bg-white p-3 pb-6 shadow-[0_24px_30px_-20px_rgba(0,0,0,0.35)] ring-1 ring-black/5 ${print.mt}`}
               style={{ transform: `rotate(${print.rot}deg)` }}
             >
-              <PhotoPlaceholder
+              <Photo
                 src={PHOTOS.lifestyle[print.key]}
                 alt={`${print.caption} at YEET`}
                 label={print.label}
@@ -82,7 +85,7 @@ export function BrandExperience() {
               />
               <figcaption className="mt-4 flex items-center justify-between px-1">
                 <span className="font-display text-2xl uppercase text-brand">{print.caption}</span>
-                <span className="font-body text-xs text-ink/50">Photo TBC</span>
+                <span className="font-body text-xs text-ink/70">Photo TBC</span>
               </figcaption>
               {i === 0 ? (
                 <FoodIcon name="burger" className="sticker-edge absolute -right-8 -top-8 w-28 text-brand md:w-36" style={{ rotate: "12deg" }} />
