@@ -5,7 +5,7 @@ import { gsap, ScrollTrigger, registerGsap, prefersReducedMotion } from "@/lib/m
 import { FoodIcon, type FoodIconName } from "@/components/icons/FoodIcons";
 
 const WORDS = ["BITE IT!", "CRUNCH IT!", "LOVE IT!", "YEET IT!"];
-const ICONS: FoodIconName[] = ["burger", "drumstick", "fries", "pizza", "juice", "popcorn"];
+const ICONS: FoodIconName[] = ["star", "fries", "drumstick", "burger", "milkshake", "wings"];
 
 function Group({ idx }: { idx: number }) {
   return (
@@ -54,12 +54,12 @@ export function AnimatedMarquee() {
   }, []);
 
   return (
-    // Layered-paper hand-off: this white sheet slides up over the bottom of the red hero.
+    // The hand-off from the red hero is the scroll wave placed above this section (app/page.tsx).
     <section
       ref={sectionRef}
       data-surface="white"
       aria-label="Brand slogans"
-      className="surface-white relative z-10 -mt-12 overflow-hidden rounded-t-[48px] py-12 shadow-[0_-24px_40px_-28px_rgba(0,0,0,0.5)] md:-mt-16 md:rounded-t-[72px] md:py-16"
+      className="surface-white relative z-10 overflow-hidden pb-12 pt-8 md:pb-16 md:pt-10"
     >
       <div className="-rotate-2 bg-brand py-5 shadow-[0_10px_0_-4px_rgba(0,0,0,0.08)] md:py-7">
         <div ref={trackRef} className="marquee-track">

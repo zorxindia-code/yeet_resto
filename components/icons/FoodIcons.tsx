@@ -120,6 +120,28 @@ const ICONS = {
     )} />
   ),
 
+  wrap: () => (
+    <Art draw={(p) => (
+      <>
+        <rect x="12" y="23" width="40" height="18" rx="9" transform="rotate(45 32 32)" {...S(p)} />
+        <path d="M31 47 L47 31" {...LINE(p)} />
+        <path d="M35 51 L51 35" {...LINE(p)} />
+        <ellipse cx="22.5" cy="22.5" rx="9" ry="6" transform="rotate(-45 22.5 22.5)" {...S(p)} />
+        <path d="M16 25 Q19 20 22 22 Q24 16 28 19" {...LINE(p)} />
+        <circle cx="23.5" cy="25.5" r="2.4" fill={p.accent} stroke="none" />
+      </>
+    )} />
+  ),
+
+  star: () => (
+    <Art draw={(p) => (
+      <>
+        <path d="M32 5 L39.5 22.5 L58 24 L44 36.5 L48.5 55 L32 45 L15.5 55 L20 36.5 L6 24 L24.5 22.5 Z" {...S(p)} />
+        <circle cx="32" cy="32" r="4" fill={p.accent} stroke="none" />
+      </>
+    )} />
+  ),
+
   pizza: () => (
     <Art draw={(p) => (
       <>

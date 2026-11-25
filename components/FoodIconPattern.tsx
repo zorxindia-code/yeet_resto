@@ -4,16 +4,19 @@ type Props = {
   /** "red" = white icons on red surface; "white" = low-opacity red icons on white. */
   tone?: "red" | "white";
   density?: "low" | "medium";
+  /** Rotates the icon order so each section starts with a different sticker. */
+  offset?: number;
   className?: string;
 };
 
-const ORDER: FoodIconName[] = ["burger", "drumstick", "fries", "pizza", "popcorn", "juice", "wings", "milkshake"];
+// No burger here: the hero, assembly and bag already carry it. Variety keeps the pattern from reading as filler.
+const ORDER: FoodIconName[] = ["drumstick", "fries", "star", "pizza", "juice", "wings", "popcorn", "takeaway-bag", "milkshake"];
 
 /** Subtle, decorative background pattern. Always aria-hidden. */
-export function FoodIconPattern({ tone = "white", density = "low", className = "" }: Props) {
+export function FoodIconPattern({ tone = "white", density = "low", offset = 0, className = "" }: Props) {
   const count = density === "low" ? 6 : 10;
   const items = Array.from({ length: count }, (_, i) => ({
-    name: ORDER[i % ORDER.length],
+    name: ORDER[(i + offset) % ORDER.length],
     left: (i * 37) % 92,
     top: (i * 53) % 88,
     rot: ((i * 29) % 50) - 25,

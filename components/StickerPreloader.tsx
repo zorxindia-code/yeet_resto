@@ -26,7 +26,7 @@ const PIECES: Piece[] = [
   { icon: "burger", left: "12%", top: "18%", size: 128, from: [-420, -260], rot: -14, origin: "0% 0%", peel: [-260, -240] },
   { icon: "drumstick", left: "76%", top: "68%", size: 118, from: [420, 300], rot: 12, origin: "100% 100%", peel: [240, 260] },
   { icon: "fries", left: "84%", top: "16%", size: 116, from: [380, -300], rot: 10, origin: "100% 0%", peel: [40, -340] }, // curls up
-  { icon: "pizza", left: "8%", top: "72%", size: 124, from: [-380, 320], rot: -10, origin: "0% 100%", peel: [-320, 40] }, // sideways
+  { icon: "wrap", left: "8%", top: "72%", size: 124, from: [-380, 320], rot: -10, origin: "0% 100%", peel: [-320, 40] }, // sideways
   { icon: "juice", left: "50%", top: "8%", size: 104, from: [0, -420], rot: 6, origin: "50% 0%", peel: [200, -260] }, // diagonal
 ];
 

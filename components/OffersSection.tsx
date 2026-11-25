@@ -29,7 +29,7 @@ const TILTS = [-2.5, 1.5, -1];
 export function OffersSection() {
   return (
     <section id="offers" data-surface="white" aria-labelledby="offers-title" className="surface-white relative overflow-hidden py-24 md:py-36">
-      <FoodIconPattern tone="white" />
+      <FoodIconPattern tone="white" offset={6} />
       <div className="relative mx-auto max-w-[1440px] px-5 md:px-10">
         <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
           <h2 id="offers-title" className="font-display text-[clamp(3rem,9vw,8.5rem)] uppercase leading-[0.85] text-brand">

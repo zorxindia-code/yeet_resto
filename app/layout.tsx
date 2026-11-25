@@ -5,7 +5,6 @@ import { SmoothScrollProvider } from "@/components/SmoothScrollProvider";
 import { CustomCursor } from "@/components/CustomCursor";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
-import { MobileActionBar } from "@/components/MobileActionBar";
 import { SITE } from "@/lib/site";
 
 const fredoka = Fredoka({ subsets: ["latin"], variable: "--font-fredoka", display: "swap" });
@@ -14,7 +13,7 @@ const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-dm", display: "sw
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: { default: `${SITE.name} — Cravings? YEET it.`, template: `%s · ${SITE.name}` },
-  description: "Big bites. Bold flavours. Good moods. Burgers, chicken, fries, pizza, popcorn and drinks from YEET RESTO CAFÉ.",
+  description: "Big bites. Bold flavours. Good moods. Smash burgers, zinger burgers, wings, wraps, strips meals, loaded fries and shakes from YEET RESTO CAFÉ.",
   openGraph: {
     title: `${SITE.name} — Cravings? YEET it.`,
     description: "Big bites. Bold flavours. Good moods.",
@@ -28,6 +27,8 @@ export const viewport: Viewport = {
   themeColor: "#dd0303",
   width: "device-width",
   initialScale: 1,
+  // Lets the floating mobile header and footer pad around the iOS notch and home indicator.
+  viewportFit: "cover",
 };
 
 // Decides before first paint whether the sticker intro should play (once per session).
@@ -61,7 +62,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <SiteHeader />
           <div id="main">{children}</div>
           <SiteFooter />
-          <MobileActionBar />
         </SmoothScrollProvider>
       </body>
     </html>

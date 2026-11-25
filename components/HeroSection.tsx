@@ -120,10 +120,29 @@ export function HeroSection() {
       ref={ref}
       data-surface="red"
       aria-labelledby="hero-title"
-      className="surface-red paper-texture relative isolate min-h-[100svh] overflow-hidden pb-24 pt-28 md:pt-32"
+      className="surface-red paper-texture relative isolate flex min-h-[100svh] flex-col justify-end overflow-hidden pb-24 pt-28 md:block md:pt-32"
     >
       <div data-hero-pattern className="absolute inset-0 -z-10">
         <FoodIconPattern tone="red" density="low" />
+      </div>
+
+      {/* Phones: full-bleed photo with the copy on its lower third. Desktop keeps the cutout composition. */}
+      <div className="absolute inset-0 -z-[5] md:hidden" aria-hidden="true">
+        <Image
+          src={PHOTOS.mobile.hero.src}
+          alt=""
+          fill
+          loading="eager"
+          fetchPriority="high"
+          // 1px on desktop, where this layer is hidden, so wide screens don't download it.
+          sizes="(min-width: 768px) 1px, 100vw"
+          className="object-cover"
+          style={{ objectPosition: PHOTOS.mobile.hero.position }}
+        />
+        <div className="absolute inset-x-0 bottom-0 h-[68%] bg-gradient-to-t from-black/80 via-black/45 to-transparent" />
+        <div data-enter="sticker" className="absolute right-4 top-[calc(env(safe-area-inset-top)+92px)] w-24">
+          <Image src="/brand/yeet-logo.png" alt="" width={1080} height={579} sizes="96px" className="logo-die-cut h-auto w-full rotate-[8deg]" />
+        </div>
       </div>
 
       <div className="mx-auto grid max-w-[1440px] grid-cols-[minmax(0,1fr)] items-center gap-6 px-5 md:px-10 lg:min-h-[calc(100svh-10rem)] lg:grid-cols-12">
@@ -149,14 +168,14 @@ export function HeroSection() {
             <span data-hero-cta className="block sm:inline-block">
               <StickerButton href="/menu" surface="red" className="w-full sm:w-auto">Explore the menu</StickerButton>
             </span>
-            <span data-hero-cta className="block sm:inline-block">
+            <span data-hero-cta className="hidden md:inline-block">
               <StickerButton href={SITE.orderUrl} variant="secondary" surface="red" className="w-full sm:w-auto">Order now</StickerButton>
             </span>
           </div>
         </div>
 
         {/* Product composition: an open, layered layout rather than a framed card */}
-        <div className="relative lg:col-span-7">
+        <div className="relative hidden md:block lg:col-span-7">
           <div className="@container relative mx-auto aspect-[1/0.9] w-full max-w-[720px] lg:-mr-6 lg:ml-auto">
             {/* Outlined type for depth */}
             <div data-depth="8" className="absolute -left-[4%] top-[2%] z-0" aria-hidden="true">
@@ -206,7 +225,7 @@ export function HeroSection() {
                       height={burger.height}
                       loading="eager"
                       fetchPriority="high"
-                      sizes="(min-width: 1024px) 580px, 80vw"
+                      sizes="(min-width: 1024px) 580px, (min-width: 768px) 80vw, 1px"
                       className="h-auto w-full -rotate-3"
                     />
                   </div>
@@ -268,7 +287,7 @@ export function HeroSection() {
         </div>
       </div>
 
-      <div className="mx-auto mt-6 flex max-w-[1440px] items-center gap-3 px-5 font-display text-sm uppercase tracking-[0.2em] text-white md:px-10">
+      <div className="mx-auto mt-6 hidden max-w-[1440px] items-center gap-3 px-5 font-display md:flex text-sm uppercase tracking-[0.2em] text-white md:px-10">
         <span aria-hidden="true" className="h-px w-10 bg-white" />
         Scroll to peel
       </div>

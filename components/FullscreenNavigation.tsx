@@ -7,20 +7,21 @@ import { NAV_LINKS, SITE } from "@/lib/site";
 import { FoodIcon } from "@/components/icons/FoodIcons";
 import { useLenis } from "@/components/SmoothScrollProvider";
 import { StickerButton } from "@/components/StickerButton";
+import type { ActiveNav } from "@/lib/useActiveNav";
 
-type Props = { open: boolean; onClose: () => void };
+type Props = { open: boolean; onClose: () => void; active: ActiveNav };
 
 // Decorations live in negative space only: below the link list on phones,
 // in the empty right half on larger screens. Two are desktop-only.
 const DECOR = [
-  { icon: "burger", className: "left-[10%] top-[max(54%,430px)] w-20 md:left-auto md:right-[8%] md:top-[14%] md:w-36", rot: -12 },
-  { icon: "pizza", className: "right-[10%] top-[max(50%,420px)] w-16 md:right-[30%] md:top-[30%] md:w-28", rot: 10 },
+  { icon: "takeaway-bag", className: "left-[10%] top-[max(54%,430px)] w-20 md:left-auto md:right-[8%] md:top-[14%] md:w-36", rot: -12 },
+  { icon: "wrap", className: "right-[10%] top-[max(50%,420px)] w-16 md:right-[30%] md:top-[30%] md:w-28", rot: 10 },
   { icon: "popcorn", className: "hidden md:block md:right-[12%] md:bottom-[16%] md:w-28", rot: 8 },
   { icon: "juice", className: "hidden md:block md:right-[32%] md:bottom-[24%] md:w-28", rot: -8 },
 ] as const;
 
 /** Full-screen menu: a white sheet wipes in, labels slap on like oversized stickers. */
-export function FullscreenNavigation({ open, onClose }: Props) {
+export function FullscreenNavigation({ open, onClose, active }: Props) {
   const panelRef = useRef<HTMLDivElement>(null);
   const lenis = useLenis();
 
@@ -105,19 +106,31 @@ export function FullscreenNavigation({ open, onClose }: Props) {
 
         <nav aria-label="Primary">
           <ul className="flex flex-col gap-2 md:gap-3">
-            {NAV_LINKS.map((item, i) => (
-              <li key={item.label} data-nav-link>
-                <SmartLink
-                  href={item.href}
-                  onClick={onClose}
-                  data-cursor="explore"
-                  className="sticker-label inline-flex items-baseline gap-4 py-1 text-[clamp(3rem,11vw,8rem)] text-brand transition-transform duration-300 ease-out hover:-rotate-2 hover:translate-x-2 focus-visible:-rotate-2"
-                >
-                  <span className="font-body text-sm text-ink/70">0{i + 1}</span>
-                  {item.label}
-                </SmartLink>
-              </li>
-            ))}
+            {NAV_LINKS.map((item, i) => {
+              const current = active.label === item.label;
+              return (
+                <li key={item.label} data-nav-link>
+                  <SmartLink
+                    href={item.href}
+                    onClick={onClose}
+                    data-cursor="explore"
+                    aria-current={current ? (active.kind === "page" ? "page" : "location") : undefined}
+                    className={`sticker-label inline-flex items-center gap-4 py-1 text-[clamp(3rem,11vw,8rem)] transition-transform duration-300 ease-out hover:-rotate-2 hover:translate-x-2 focus-visible:-rotate-2 ${
+                      current ? "text-ink" : "text-brand"
+                    }`}
+                  >
+                    <span className="self-baseline font-body text-sm text-ink/70">0{i + 1}</span>
+                    {item.label}
+                    {/* Current page/section: a small die-cut sticker */}
+                    {current ? (
+                      <span aria-hidden="true" className="die-cut -rotate-6 bg-brand px-2.5 py-1 font-display text-[clamp(0.7rem,1.6vw,1rem)] tracking-wide text-white">
+                        You&apos;re here
+                      </span>
+                    ) : null}
+                  </SmartLink>
+                </li>
+              );
+            })}
           </ul>
         </nav>
 

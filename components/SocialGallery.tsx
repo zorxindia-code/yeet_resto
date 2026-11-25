@@ -25,7 +25,7 @@ const TILES: Tile[] = [
   { label: "Warm café interior at night", caption: "Night shift", span: "col-span-1 row-span-2 md:col-span-1 md:row-span-2", rot: -2, icon: "popcorn" },
   { label: "Chef at the stove, steam rising", caption: "Kitchen cam", span: "col-span-1 md:col-span-2", rot: 1.5, video: true },
   { label: "Guest enjoying a burger", caption: "Good mood", span: "col-span-2 md:col-span-3", rot: -1, icon: "juice" },
-  { label: "Pizza night with friends", caption: "Slice o'clock", span: "col-span-2 md:col-span-3", rot: 1.5, icon: "pizza" },
+  { label: "Crispy chicken strips with dips", caption: "Dip check", span: "col-span-2 md:col-span-3", rot: 1.5, icon: "wings" },
 ];
 
 /** Asymmetric sticker-collage gallery. Images are placeholders until real social content is supplied. */

@@ -24,12 +24,12 @@ const SIDE: (Placed & { top: string; from: [number, number] })[] = [
 
 const DECOR: { icon: FoodIconName; left: string; top: string; width: string; rot: number }[] = [
   { icon: "popcorn", left: "6%", top: "14%", width: "10%", rot: -12 },
-  { icon: "pizza", left: "86%", top: "24%", width: "9%", rot: 10 },
+  { icon: "wrap", left: "86%", top: "24%", width: "9%", rot: 10 },
   { icon: "wings", left: "16%", top: "86%", width: "10%", rot: 8 },
   { icon: "ice-cream", left: "72%", top: "87%", width: "8%", rot: -8 },
 ];
 
-const BAG_ICONS: FoodIconName[] = ["burger", "drumstick", "fries", "pizza", "soda"];
+const BAG_ICONS: FoodIconName[] = ["burger", "drumstick", "fries", "wrap", "soda"];
 
 // Front panel with a die-cut handle slot (even-odd hole), drawn in a 300×360 box.
 const FRONT =

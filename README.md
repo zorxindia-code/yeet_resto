@@ -18,8 +18,8 @@ npm run lint
 
 | Route   | What it is |
 | ------- | ---------- |
-| `/`     | Homepage: preloader → hero → marquee → categories → featured → sticker-to-reality reveal → burger assembly → brand story → takeaway bag → offers → gallery → location → sticker playground footer |
-| `/menu` | Fully prerendered menu grouped by category: sticky category tabs, search, filters (bestsellers, spicy, available now), product dialog. Deep links: `/menu?cat=burgers` (`chicken`, `pizza`, `sides`, `popcorn`, `drinks`) |
+| `/`     | Homepage: preloader → hero → marquee → categories → (phones: combo promo) → burger assembly → brand story → takeaway bag → offers → gallery → location → sticker playground footer, with scroll-driven waves at each red/white boundary |
+| `/menu` | Fully prerendered menu grouped by category: sticky category tabs, search (names, ingredients, sizes, flavours), product dialog with sizes, flavours and extras. Deep links: `/menu?cat=smash-burgers` (`zinger-burgers`, `wings`, `loaded-fries`, `zinger-wraps`, `strips-meals`, `fries-sides`, `refreshments`, `kids-meals`) |
 
 ## Replacing placeholders
 
@@ -27,27 +27,36 @@ Everything marked *placeholder* on the site is meant to be swapped. None of it c
 
 | What | Where |
 | ---- | ----- |
-| Menu (24 demo products: names, descriptions, sample prices, photos, bestseller, spice level, availability) | `lib/menu.ts`, the single source for the homepage and `/menu` |
+| Menu (the client's real menu in AED: 31 items in 9 categories, with sizes, flavours, extras and open questions in `toConfirm`) | `lib/menu.ts`, the single source for the homepage and `/menu` |
+| Menu photos (cut out of the client's menu poster) | `public/images/menu/<section>/<slug>.webp`, referenced from `lib/menu.ts` |
 | Hero cutouts, reveal photo, lifestyle and gallery photos | `lib/assets.ts` (files in `public/images/…`) |
 | Photo credits for the current demo photography | `public/images/CREDITS.md` |
-| Address, hours, phone, email, currency, order/maps/WhatsApp/social links | `lib/site.ts`, or the `NEXT_PUBLIC_*` env vars it reads |
+| Address, hours, phone, email, order/maps/WhatsApp/social links | `lib/site.ts`, or the `NEXT_PUBLIC_*` env vars it reads |
 | Offers | `components/OffersSection.tsx` |
 | Brand story copy | `components/BrandExperience.tsx` |
 | Illustrated burger layers (scroll assembly) | `components/illustrations/BurgerLayers.tsx` (`BURGER_LAYERS`, bottom → top) |
 | Takeaway bag artwork | `components/TakeawayBagExperience.tsx` (`TakeawayBag`) |
 
-### Demo photography
+### Photography
 
-All food, lifestyle and gallery photos are **temporary CC0 stand-ins** (StockSnap and rawpixel via Openverse), downloaded,
-re-encoded to WebP and served at responsive sizes as AVIF/WebP by `next/image`. Hero cutouts are transparent WebP, lifted
-locally with Apple's Vision framework. Swap in YEET's own photography before launch; see `public/images/CREDITS.md`.
+**Menu photos** are cut out of the client's menu poster (853×1280 px) with Apple's Vision subject-lifting, cleaned at the
+edges, resampled 2× (Lanczos, no generative upscaling) and saved as transparent WebP. They are small, so `MenuPhoto` shows
+them near their real size on a paper background instead of stretching them. Items the poster has no photo for show a
+labelled "Photo coming soon" placeholder. Replace a file in `public/images/menu/` (keep the transparency) and update its
+`width`/`height` in `lib/menu.ts`; several photos also need replacing because the cups and cartons carry another brand's
+crown logo (see `imageNote` in `lib/menu.ts`).
+
+**Hero cutouts, the reveal photo, lifestyle and gallery photos** are still **temporary CC0 stand-ins** (StockSnap and
+rawpixel via Openverse), served as AVIF/WebP by `next/image`. Swap in YEET's own photography before launch; see
+`public/images/CREDITS.md`.
 
 ### Environment variables (all optional)
 
 ```
 NEXT_PUBLIC_SITE_URL       # canonical URL for metadata
-NEXT_PUBLIC_CURRENCY       # price prefix for the demo menu (defaults to $)
-NEXT_PUBLIC_ORDER_URL      # "Order now" buttons (defaults to /menu)
+NEXT_PUBLIC_ORDER_URL      # "Order now" buttons (defaults to /menu; the product dialog shows "link coming soon")
+NEXT_PUBLIC_PHONE          # shown as "Phone number TBC" until set
+NEXT_PUBLIC_EMAIL          # shown as "Email TBC" until set
 NEXT_PUBLIC_MAPS_URL
 NEXT_PUBLIC_DIRECTIONS_URL
 NEXT_PUBLIC_WHATSAPP_URL

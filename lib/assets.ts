@@ -13,11 +13,17 @@ export const PHOTOS = {
     drumstick: { src: "/images/food/cutouts/drumstick.webp", width: 1000, height: 503, alt: "Crispy fried chicken drumstick" },
     fries: { src: "/images/food/cutouts/fries.webp", width: 740, height: 633, alt: "Cup of golden fries with herbs" },
   } satisfies Record<string, Cutout>,
-  revealBurger: "/images/food/reveal-burger.webp",
+  /** Mobile-only full-bleed photography (phones get photo-led layouts; desktop keeps the cutouts). */
+  mobile: {
+    hero: { src: "/images/lifestyle/gallery-5.webp", alt: "Guest holding out a half-eaten burger", position: "50% 30%" },
+    menu: { src: "/images/lifestyle/crew.webp", alt: "Friends sharing burgers and fries around a table", position: "50% 50%" },
+    combo: { src: "/images/lifestyle/gallery-strips.webp", alt: "Crispy chicken strips with dipping sauces" },
+    branch: { src: "/images/lifestyle/room.webp", alt: "Restaurant dining room" },
+  },
   lifestyle: {
     room: "/images/lifestyle/room.webp",
     crew: "/images/lifestyle/crew.webp",
     kitchen: "/images/lifestyle/kitchen.webp",
   },
-  gallery: [1, 2, 3, 4, 5, 6].map((n) => `/images/lifestyle/gallery-${n}.webp`),
+  gallery: [1, 2, 3, 4, 5].map((n) => `/images/lifestyle/gallery-${n}.webp`).concat("/images/lifestyle/gallery-strips.webp"),
 };

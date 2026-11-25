@@ -14,7 +14,7 @@ const STICKERS: Sticker[] = [
   { kind: "icon", id: "burger", icon: "burger", label: "Burger", left: 6, top: 10, size: 150, rot: -10 },
   { kind: "icon", id: "drumstick", icon: "drumstick", label: "Chicken leg", left: 82, top: 8, size: 130, rot: 12 },
   { kind: "icon", id: "wings", icon: "wings", label: "Chicken wings", left: 66, top: 62, size: 150, rot: -6 },
-  { kind: "icon", id: "pizza", icon: "pizza", label: "Pizza", left: 3, top: 60, size: 135, rot: 8 },
+  { kind: "icon", id: "wrap", icon: "wrap", label: "Zinger wrap", left: 3, top: 60, size: 135, rot: 8 },
   { kind: "icon", id: "fries", icon: "fries", label: "Fries", left: 88, top: 40, size: 120, rot: -8 },
   { kind: "icon", id: "popcorn", icon: "popcorn", label: "Popcorn", left: 30, top: 74, size: 115, rot: 10 },
   { kind: "icon", id: "juice", icon: "juice", label: "Juice", left: 42, top: 6, size: 110, rot: -4 },

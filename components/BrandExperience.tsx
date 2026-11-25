@@ -67,12 +67,13 @@ export function BrandExperience() {
           </div>
         </div>
 
-        <div className="relative mt-20 grid grid-cols-[minmax(0,1fr)] gap-14 md:grid-cols-3 md:gap-8">
+        {/* Phones: a swipeable row of prints instead of three full-height stacked photos. */}
+        <div className="relative -mx-5 mt-8 flex snap-x snap-mandatory gap-5 overflow-x-auto px-5 py-8 [scrollbar-width:none] md:mx-0 md:mt-20 md:grid md:grid-cols-3 md:gap-8 md:overflow-visible md:p-0 [&::-webkit-scrollbar]:hidden">
           {PRINTS.map((print, i) => (
             <figure
               key={print.caption}
               data-print
-              className={`relative bg-white p-3 pb-6 shadow-[0_24px_30px_-20px_rgba(0,0,0,0.35)] ring-1 ring-black/5 ${print.mt}`}
+              className={`relative w-[74%] shrink-0 snap-center bg-white p-3 pb-6 shadow-[0_24px_30px_-20px_rgba(0,0,0,0.35)] ring-1 ring-black/5 md:w-auto ${print.mt}`}
               style={{ transform: `rotate(${print.rot}deg)` }}
             >
               <Photo
@@ -81,14 +82,14 @@ export function BrandExperience() {
                 label={print.label}
                 ratio="4 / 5"
                 className="w-full"
-                sizes="(min-width: 768px) 30vw, 90vw"
+                sizes="(min-width: 768px) 30vw, 70vw"
               />
               <figcaption className="mt-4 flex items-center justify-between px-1">
                 <span className="font-display text-2xl uppercase text-brand">{print.caption}</span>
                 <span className="font-body text-xs text-ink/70">Photo TBC</span>
               </figcaption>
               {i === 0 ? (
-                <FoodIcon name="burger" className="sticker-edge absolute -right-8 -top-8 w-28 text-brand md:w-36" style={{ rotate: "12deg" }} />
+                <FoodIcon name="star" className="sticker-edge absolute -right-3 -top-5 w-16 text-brand md:-right-8 md:-top-8 md:w-36" style={{ rotate: "12deg" }} />
               ) : null}
             </figure>
           ))}

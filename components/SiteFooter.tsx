@@ -3,6 +3,8 @@
 import { SmartLink } from "@/components/SmartLink";
 import { NAV_LINKS, SITE } from "@/lib/site";
 import { useLenis } from "@/components/SmoothScrollProvider";
+import { ScrollWaveTransition } from "@/components/ScrollWaveTransition";
+import { PendingLink } from "@/components/PendingLink";
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 
@@ -46,8 +48,11 @@ export function SiteFooter() {
     <footer>
       <LazyPlayground />
 
+      {/* White playground → red footer. Hangs into the footer's top padding, clear of the stickers. */}
+      <ScrollWaveTransition from="white" to="red" overlap="bottom" height={{ mobile: 56, desktop: 104 }} shape={2} direction="left" amplitude={0.85} />
+
       {/* Functional content sits outside the draggable layer */}
-      <div data-surface="red" className="surface-red paper-texture relative z-10 pb-28 pt-16 md:pb-14 md:pt-20">
+      <div data-surface="red" className="surface-red paper-texture relative z-10 pb-[max(2.5rem,env(safe-area-inset-bottom))] pt-20 md:pb-14 md:pt-28">
         <div className="mx-auto grid grid-cols-[minmax(0,1fr)] max-w-[1440px] gap-12 px-5 md:grid-cols-12 md:px-10">
           <nav aria-label="Footer" className="md:col-span-4">
             <h2 className="font-display text-sm uppercase tracking-[0.2em] text-white">Explore</h2>
@@ -68,10 +73,10 @@ export function SiteFooter() {
               <li>{SITE.address}</li>
               <li>{SITE.hours}</li>
               <li>
-                <a href={`tel:${SITE.phone.replace(/\s/g, "")}`} className="underline underline-offset-4">{SITE.phone}</a>
+                {SITE.phone ? <a href={`tel:${SITE.phone.replace(/\s/g, "")}`} className="underline underline-offset-4">{SITE.phone}</a> : "Phone number TBC"}
               </li>
               <li>
-                <a href={`mailto:${SITE.email}`} className="underline underline-offset-4">{SITE.email}</a>
+                {SITE.email ? <a href={`mailto:${SITE.email}`} className="underline underline-offset-4">{SITE.email}</a> : "Email TBC"}
               </li>
             </ul>
           </div>
@@ -81,10 +86,10 @@ export function SiteFooter() {
               <h2 className="font-display text-sm uppercase tracking-[0.2em] text-white">Follow the gang</h2>
               <ul className="mt-4 flex gap-3 font-display text-base uppercase">
                 <li>
-                  <a href={SITE.instagramUrl} className="sticker-cta inline-block border-2 border-white bg-white px-5 py-2.5 text-brand" data-cursor="view">Instagram</a>
+                  <PendingLink href={SITE.instagramUrl} className="sticker-cta inline-block border-2 border-white bg-white px-5 py-2.5 text-brand">Instagram</PendingLink>
                 </li>
                 <li>
-                  <a href={SITE.tiktokUrl} className="sticker-cta inline-block border-2 border-white px-5 py-2.5" data-cursor="view">TikTok</a>
+                  <PendingLink href={SITE.tiktokUrl} className="sticker-cta inline-block border-2 border-white px-5 py-2.5">TikTok</PendingLink>
                 </li>
               </ul>
             </div>

@@ -2,9 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { gsap, registerGsap, prefersReducedMotion } from "@/lib/motion";
-import { CATEGORIES, PRODUCTS, categoryCover } from "@/lib/menu";
+import { CATEGORIES, productsIn } from "@/lib/menu";
 import { FoodIcon } from "@/components/icons/FoodIcons";
-import { Photo } from "@/components/Photo";
+import { MenuPhoto } from "@/components/MenuPhoto";
 import { SmartLink } from "@/components/SmartLink";
 
 /**
@@ -12,6 +12,9 @@ import { SmartLink } from "@/components/SmartLink";
  * names in a ruled list, with a printed photo on desktop that follows the hovered or focused
  * row. On touch screens every row carries its own thumbnail, so nothing depends on hover.
  */
+const NUMBER_WORDS = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve"];
+const SECTION_COUNT = NUMBER_WORDS[CATEGORIES.length] ?? String(CATEGORIES.length);
+
 export function FoodCategorySection() {
   const ref = useRef<HTMLElement>(null);
   const [active, setActive] = useState(0);
@@ -38,7 +41,7 @@ export function FoodCategorySection() {
   const current = CATEGORIES[active];
 
   return (
-    <section ref={ref} id="categories" data-surface="white" aria-labelledby="categories-title" className="surface-white relative overflow-x-clip py-24 md:py-32">
+    <section ref={ref} id="categories" data-surface="white" aria-labelledby="categories-title" className="surface-white relative overflow-x-clip pb-24 pt-14 md:py-32">
       <div className="mx-auto max-w-[1440px] px-5 md:px-10">
         <header className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
           <h2 id="categories-title" className="font-display text-[clamp(3rem,9vw,8.5rem)] uppercase leading-[0.85] text-brand">
@@ -46,13 +49,13 @@ export function FoodCategorySection() {
             <br />
             craving.
           </h2>
-          <p className="max-w-xs font-body text-base text-ink/80">Six sections, one promise: every bite lands loud. Tap one to jump into the menu.</p>
+          <p className="max-w-xs font-body text-base text-ink/80">{SECTION_COUNT} sections, one promise: every bite lands loud. Tap one to jump into the menu.</p>
         </header>
 
         <div className="mt-14 grid grid-cols-[minmax(0,1fr)] gap-12 lg:mt-20 lg:grid-cols-12 lg:gap-16">
           <ol className="border-t-2 border-brand/15 lg:col-span-7">
             {CATEGORIES.map((cat, i) => {
-              const count = PRODUCTS.filter((p) => p.category === cat.id).length;
+              const count = productsIn(cat.id).length;
               return (
                 <li key={cat.id} data-cat-row className="border-b-2 border-brand/15">
                   <SmartLink
@@ -62,12 +65,16 @@ export function FoodCategorySection() {
                     onFocus={() => setActive(i)}
                     className="group flex items-center gap-4 py-4 md:gap-6 md:py-5"
                   >
-                    <Photo
-                      src={categoryCover(cat)}
+                    <MenuPhoto
+                      image={cat.cover}
                       alt=""
-                      ratio="1 / 1"
+                      label={cat.name}
+                      icon={cat.icon}
+                      ratio={1}
+                      fit={0.9}
+                      maxScale={0.75}
                       sizes="88px"
-                      className="w-[72px] shrink-0 -rotate-3 rounded-[6px] md:w-[88px] lg:hidden"
+                      className="w-[72px] shrink-0 -rotate-3 rounded-[6px] bg-paper md:w-[88px] lg:hidden"
                     />
                     <span className="hidden w-10 font-display text-sm text-ink/70 lg:block">0{i + 1}</span>
                     <span className="min-w-0 flex-1">
@@ -102,13 +109,23 @@ export function FoodCategorySection() {
                       aria-hidden={i !== active}
                       className={`absolute inset-0 transition-[opacity,scale] duration-500 ease-out ${i === active ? "scale-100 opacity-100" : "scale-[1.04] opacity-0"}`}
                     >
-                      <Photo src={categoryCover(cat)} alt={cat.name} ratio="auto" className="h-full w-full" sizes="(min-width: 1024px) 460px, 0px" />
+                      <MenuPhoto
+                        image={cat.cover}
+                        alt={cat.name}
+                        label={cat.name}
+                        icon={cat.icon}
+                        ratio={4 / 5}
+                        fit={0.82}
+                        maxScale={1.3}
+                        className="h-full w-full bg-paper"
+                        sizes="(min-width: 1024px) 380px, 0px"
+                      />
                     </div>
                   ))}
                 </div>
                 <div className="flex items-center justify-between px-1 pb-1 pt-4">
                   <span className="font-display text-2xl uppercase text-brand">{current.name}</span>
-                  <span className="font-body text-sm text-ink/70">Demo photo</span>
+                  <span className="font-body text-sm text-ink/70">{productsIn(current.id).length} items</span>
                 </div>
                 <FoodIcon key={current.id} name={current.icon} className="sticker-edge absolute -right-3 -top-6 w-24 rotate-12" />
               </div>
