@@ -62,3 +62,4 @@ NEXT_PUBLIC_TIKTOK_URL
 - `prefers-reduced-motion` skips the preloader, entrance animations, pins and the marquee. All content stays visible.
 - Entrance animations use `fromTo` on wrapper elements without CSS transitions, so they never fight hover transitions.
 # yeet_resto
+# yeet_resto
