@@ -1,0 +1,122 @@
+@import "tailwindcss";
+
+/* ---------- Brand tokens ---------- */
+@theme {
+  --color-brand: #dd0303;        /* sampled from the original YEET logo */
+  --color-brand-deep: #a80000;   /* shade used for pressed/hover states */
+  --color-ink: #1b1412;          /* charcoal for body copy only */
+  --color-paper: #fff8f6;        /* subtle off-white surface */
+  --font-display: var(--font-fredoka), "Arial Rounded MT Bold", system-ui, sans-serif;
+  --font-body: var(--font-dm), system-ui, -apple-system, sans-serif;
+  --ease-sticker: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@layer base {
+  html {
+    background: #fff;
+    color: var(--color-ink);
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: #fff;
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+  }
+  h1, h2, h3, .font-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+  :focus-visible {
+    outline: 3px solid currentColor;
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  .surface-red :focus-visible { outline-color: #fff; }
+}
+
+/* Lenis required styles */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+/* Custom cursor only on fine-pointer devices; native pointer kept elsewhere */
+@media (hover: hover) and (pointer: fine) {
+  body.has-custom-cursor [data-cursor] { cursor: none; }
+}
+
+/* ---------- Surfaces & texture ---------- */
+.surface-red { background: var(--color-brand); color: #fff; }
+.surface-white { background: #fff; color: var(--color-ink); }
+.paper-texture {
+  background-image: radial-gradient(rgba(0, 0, 0, 0.035) 1px, transparent 1px);
+  background-size: 6px 6px;
+}
+
+/* ---------- Sticker treatments ---------- */
+.sticker-edge {
+  filter: drop-shadow(0 1.5px 0 rgba(0, 0, 0, 0.12)) drop-shadow(0 6px 10px rgba(0, 0, 0, 0.14));
+}
+/* Presentation-only white die-cut ring around the logo silhouette (artwork untouched).
+   Keeps thin red lettering such as "RESTO CAFÉ" legible on red surfaces. */
+.logo-die-cut {
+  filter:
+    drop-shadow(2.5px 0 0 #fff) drop-shadow(-2.5px 0 0 #fff)
+    drop-shadow(0 2.5px 0 #fff) drop-shadow(0 -2.5px 0 #fff)
+    drop-shadow(0 8px 10px rgba(0, 0, 0, 0.25));
+}
+.die-cut {
+  border-radius: 36px 14px 32px 16px;
+  box-shadow: 0 0 0 4px #fff, 0 10px 18px -8px rgba(0, 0, 0, 0.35);
+}
+.sticker-label {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 0.92;
+}
+.sticker-cta {
+  border-radius: 26px 10px 24px 12px;
+  transition: transform 260ms var(--ease-sticker), box-shadow 260ms var(--ease-sticker);
+}
+.sticker-cta:hover { transform: translateY(-2px) rotate(-1.5deg); }
+.sticker-cta:active { transform: translateY(1px) scale(0.98); }
+
+/* White die-cut halo pass for SVG layers (CSS beats presentation attributes) */
+.layer-halo, .layer-halo * {
+  fill: #fff !important;
+  stroke: #fff !important;
+  stroke-width: 16px !important;
+  stroke-linejoin: round;
+}
+
+/* Sticker playground scale: smaller stickers on phones */
+.sp-canvas { --sp-scale: 0.6; }
+@media (min-width: 768px) {
+  .sp-canvas { --sp-scale: 1; }
+}
+
+/* ---------- Marquee ---------- */
+.marquee-track { display: flex; width: max-content; will-change: transform; }
+
+/* ---------- Intro (preloader) ---------- */
+.intro-overlay { display: none; }
+html[data-intro="play"] .intro-overlay { display: block; }
+.peel-perspective { perspective: 1100px; transform-style: preserve-3d; }
+.logo-backside {
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .marquee-track { animation: none !important; }
+}
