@@ -99,10 +99,33 @@ html.lenis, html.lenis body { height: auto; }
 /* ---------- Marquee ---------- */
 .marquee-track { display: flex; width: max-content; will-change: transform; }
 
-/* ---------- Intro (preloader) ---------- */
-.intro-overlay { display: none; }
+/* ---------- Intro (first visit) & refresh loader ---------- */
+.intro-overlay, .refresh-loader { display: none; }
 html[data-intro="play"] .intro-overlay { display: block; }
-.peel-perspective { perspective: 1100px; transform-style: preserve-3d; }
+html[data-intro="refresh"] .refresh-loader { display: flex; }
+/* The page underneath stays put while the intro's own scroll track drives the peel. */
+html.intro-lock, html.intro-lock body { overflow: hidden; }
+
+.intro-spinner { animation: intro-spin 0.9s linear infinite; }
+@keyframes intro-spin { to { transform: rotate(360deg); } }
+.intro-loading, .intro-ready { transition: opacity 0.35s ease, transform 0.35s ease; }
+.intro-ready { opacity: 0; transform: translateY(6px); }
+[data-state="ready"] .intro-loading { opacity: 0; }
+[data-state="ready"] .intro-spinner { animation: none; }
+[data-state="ready"] .intro-ready { opacity: 1; transform: none; }
+[data-state="ready"] .intro-scroller { overflow-y: auto; }
+.intro-arrow { animation: intro-nudge 1.6s ease-in-out infinite; }
+@keyframes intro-nudge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
+.intro-label-swipe { display: none; }
+@media (pointer: coarse) {
+  .intro-label-scroll { display: none; }
+  .intro-label-swipe { display: inline; }
+}
+
+/* Failsafe: if JavaScript never starts, neither overlay can trap the visitor. */
+html[data-intro]:not([data-intro-js]) .intro-overlay,
+html[data-intro]:not([data-intro-js]) .refresh-loader { animation: intro-failsafe 0.4s 8s forwards; }
+@keyframes intro-failsafe { to { opacity: 0; visibility: hidden; } }
 
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {

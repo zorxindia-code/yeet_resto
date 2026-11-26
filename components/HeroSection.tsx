@@ -8,6 +8,7 @@ import { FoodIconPattern } from "@/components/FoodIconPattern";
 import { StickerButton } from "@/components/StickerButton";
 import { SITE } from "@/lib/site";
 import { PHOTOS } from "@/lib/assets";
+import { MediaImage } from "@/components/MediaImage";
 
 const { burger, drumstick, fries } = PHOTOS.hero;
 
@@ -59,7 +60,9 @@ export function HeroSection() {
         .fromTo(q("[data-enter='note']"), { y: 10 }, { y: 0, duration: 0.4 }, 1.2)
         .fromTo(q("[data-hero-cta]"), { y: 24, scale: 0.94 }, { y: 0, scale: 1, duration: 0.5, stagger: 0.08, ease: "back.out(1.6)" }, 0.85);
 
-      if (document.documentElement.dataset.intro === "play") {
+      // Wait for whichever loader is covering the page (first-visit intro or refresh sheet).
+      const loader = document.documentElement.dataset.intro;
+      if (loader === "play" || loader === "refresh") {
         window.addEventListener("yeet:intro-done", () => intro.play(), { once: true });
       } else {
         intro.play();
@@ -128,14 +131,16 @@ export function HeroSection() {
 
       {/* Phones: full-bleed photo with the copy on its lower third. Desktop keeps the cutout composition. */}
       <div className="absolute inset-0 -z-[5] md:hidden" aria-hidden="true">
-        <Image
+        {/* Phone LCP image; never downloaded on wider screens. */}
+        <MediaImage
+          skip="(min-width: 768px)"
+          data-lcp
           src={PHOTOS.mobile.hero.src}
           alt=""
           fill
           loading="eager"
           fetchPriority="high"
-          // 1px on desktop, where this layer is hidden, so wide screens don't download it.
-          sizes="(min-width: 768px) 1px, 100vw"
+          sizes="100vw"
           className="object-cover"
           style={{ objectPosition: PHOTOS.mobile.hero.position }}
         />
@@ -218,14 +223,17 @@ export function HeroSection() {
               <div data-exit="burger">
                 <div className="transition-[rotate,scale] duration-500 ease-out hover:rotate-2 hover:scale-[1.03]" data-cursor="BITE ME">
                   <div data-enter="burger">
-                    <Image
+                    {/* Desktop LCP image; phones (photo hero) never download it. */}
+                    <MediaImage
+                      skip="(max-width: 767px)"
+                      data-lcp
                       src={burger.src}
                       alt={burger.alt}
                       width={burger.width}
                       height={burger.height}
                       loading="eager"
                       fetchPriority="high"
-                      sizes="(min-width: 1024px) 580px, (min-width: 768px) 80vw, 1px"
+                      sizes="(min-width: 1024px) 580px, 80vw"
                       className="h-auto w-full -rotate-3"
                     />
                   </div>

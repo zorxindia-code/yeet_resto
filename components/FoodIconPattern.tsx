@@ -9,8 +9,9 @@ type Props = {
   className?: string;
 };
 
-// No burger here: the hero, assembly and bag already carry it. Variety keeps the pattern from reading as filler.
-const ORDER: FoodIconName[] = ["drumstick", "fries", "star", "pizza", "juice", "wings", "popcorn", "takeaway-bag", "milkshake"];
+// Only items on the real menu (no pizza), plus brand marks. No burger here: the hero, assembly and
+// bag already carry it, and variety keeps the pattern from reading as filler.
+const ORDER: FoodIconName[] = ["drumstick", "fries", "star", "wrap", "juice", "wings", "popcorn-chicken", "takeaway-bag", "milkshake"];
 
 /** Subtle, decorative background pattern. Always aria-hidden. */
 export function FoodIconPattern({ tone = "white", density = "low", offset = 0, className = "" }: Props) {

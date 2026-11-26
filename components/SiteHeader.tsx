@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { SmartLink } from "@/components/SmartLink";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -8,6 +7,7 @@ import { NAV_LINKS, SITE } from "@/lib/site";
 import { StickerButton } from "@/components/StickerButton";
 import { FullscreenNavigation } from "@/components/FullscreenNavigation";
 import { useActiveNav } from "@/lib/useActiveNav";
+import { MediaImage } from "@/components/MediaImage";
 
 /**
  * Desktop (lg+): a bar that adapts to the surface beneath it (sections declare
@@ -76,7 +76,7 @@ export function SiteHeader() {
             </button>
             <SmartLink href="/" aria-label={`${SITE.name} — home`} className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
               {/* Declared at the exact 128px resize (128×69) so intrinsic and declared ratios match. */}
-              <Image src="/brand/yeet-logo.png" alt={SITE.name} width={128} height={69} loading="eager" sizes="128px" className="h-9 w-auto" />
+              <MediaImage skip="(min-width: 1024px)" src="/brand/yeet-logo.png" alt={SITE.name} width={128} height={69} loading="eager" sizes="128px" className="h-9 w-auto" />
             </SmartLink>
             <SmartLink
               href={SITE.orderUrl}
@@ -91,7 +91,9 @@ export function SiteHeader() {
         <div className={`pointer-events-auto hidden transition-[background-color,box-shadow,padding] duration-300 lg:block ${barTone} ${textTone}`}>
         <div className={`mx-auto flex max-w-[1440px] items-center justify-between gap-6 px-5 transition-[height,padding] duration-300 md:px-10 ${solid ? "h-[72px]" : "py-5"}`}>
           <SmartLink href="/" aria-label={`${SITE.name} — home`} className="shrink-0" data-cursor="view">
-            <Image
+            {/* Desktop-bar logo: phones (capsule header) never download it. */}
+            <MediaImage
+              skip="(max-width: 1023px)"
               src="/brand/yeet-logo.png"
               alt={SITE.name}
               width={1080}

@@ -2,7 +2,6 @@
 
 import { Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import Image from "next/image";
 import {
   CATEGORIES,
   PRODUCTS,
@@ -18,6 +17,7 @@ import {
 import { FoodIcon } from "@/components/icons/FoodIcons";
 import { MenuPhoto } from "@/components/MenuPhoto";
 import { ScrollWaveTransition } from "@/components/ScrollWaveTransition";
+import { MediaImage } from "@/components/MediaImage";
 import { StickerButton } from "@/components/StickerButton";
 import { useLenis } from "@/components/SmoothScrollProvider";
 import { SITE } from "@/lib/site";
@@ -236,13 +236,15 @@ export function MenuBrowser() {
 
       {/* Phones: full-bleed photo intro with the heading on its lower part. */}
       <section className="relative flex min-h-[70svh] flex-col justify-end overflow-hidden px-5 pb-16 pt-28 text-center text-white md:hidden">
-        <Image
+        <MediaImage
+          skip="(min-width: 768px)"
+          data-lcp
           src={PHOTOS.mobile.menu.src}
           alt=""
           fill
           loading="eager"
           fetchPriority="high"
-          sizes="(min-width: 768px) 1px, 100vw"
+          sizes="100vw"
           className="object-cover"
           style={{ objectPosition: PHOTOS.mobile.menu.position }}
         />

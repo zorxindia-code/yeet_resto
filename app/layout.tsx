@@ -6,6 +6,9 @@ import { CustomCursor } from "@/components/CustomCursor";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SITE } from "@/lib/site";
+import { INTRO_LOGO, introLogoSrcSet } from "@/lib/intro";
+import { INTRO_SEEN_KEY } from "@/lib/ready";
+import { RefreshLoader } from "@/components/RefreshLoader";
 
 const fredoka = Fredoka({ subsets: ["latin"], variable: "--font-fredoka", display: "swap" });
 const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-dm", display: "swap" });
@@ -31,14 +34,27 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-// Decides before first paint whether the sticker intro should play (once per session).
+// Decides before first paint which loader a full page load gets:
+//  - "play": first homepage visit of the session → the scroll-to-peel intro. The seen flag is set
+//    only when the visitor finishes or skips it, so a reload mid-intro shows it again.
+//  - "refresh": every other full load (reloads, later visits, a page opened directly) → the short
+//    red-sheet loader. Reduced-motion visitors always get this one.
+// For "play" it also starts the intro logo download at high priority.
 const introScript = `
 (function(){try{
+  var d = document.documentElement;
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var seen = sessionStorage.getItem('yeet-intro-seen');
+  var seen = sessionStorage.getItem(${JSON.stringify(INTRO_SEEN_KEY)});
   if (!reduce && !seen && location.pathname === '/') {
-    document.documentElement.setAttribute('data-intro','play');
-    sessionStorage.setItem('yeet-intro-seen','1');
+    d.setAttribute('data-intro','play');
+    var l = document.createElement('link');
+    l.rel = 'preload'; l.as = 'image';
+    l.setAttribute('imagesrcset', ${JSON.stringify(introLogoSrcSet())});
+    l.setAttribute('imagesizes', ${JSON.stringify(INTRO_LOGO.sizes)});
+    l.setAttribute('fetchpriority', 'high');
+    document.head.appendChild(l);
+  } else {
+    d.setAttribute('data-intro','refresh');
   }
 }catch(e){}})();`;
 
@@ -58,6 +74,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           Skip to content
         </a>
         <SmoothScrollProvider>
+          <RefreshLoader />
           <CustomCursor />
           <SiteHeader />
           <div id="main">{children}</div>
