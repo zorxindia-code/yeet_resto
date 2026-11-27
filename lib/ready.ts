@@ -1,25 +1,24 @@
 /**
- * Resolves when what the first screen needs is actually ready: web fonts, plus every image marked
- * `data-lcp` (the hero's main image for the current breakpoint) loaded and decoded. Never waits for
- * the rest of the page. `timeoutMs` caps the wait so a slow image can never trap the visitor.
- * Call it after hydration (from an effect): reaching that point is part of "ready".
+ * Readiness milestones for the homepage loader. Each one resolves once that thing is actually usable.
+ * None of them waits for the rest of the page, and none can hang: a failed image counts as settled.
  */
-export function whenEssentialsReady(timeoutMs: number): Promise<void> {
-  const images = Array.from(document.querySelectorAll<HTMLImageElement>("img[data-lcp]"));
-  const imageReady = (img: HTMLImageElement) =>
-    img.complete
-      ? img.naturalWidth > 0
-        ? img.decode().catch(() => undefined)
-        : Promise.resolve()
-      : new Promise<void>((resolve) => {
-          img.addEventListener("load", () => resolve(), { once: true });
-          img.addEventListener("error", () => resolve(), { once: true });
-        });
-  const fonts = document.fonts?.ready ?? Promise.resolve();
-  const essentials = Promise.all([fonts, ...images.map(imageReady)]).then(() => undefined);
-  const cap = new Promise<void>((resolve) => window.setTimeout(resolve, timeoutMs));
-  return Promise.race([essentials, cap]);
+
+/** Resolves once an image has its pixels decoded, or has failed (a broken image must not block). */
+export function imageReady(img: HTMLImageElement): Promise<void> {
+  if (img.complete) {
+    return img.naturalWidth > 0 ? img.decode().catch(() => undefined) : Promise.resolve();
+  }
+  return new Promise((resolve) => {
+    img.addEventListener("load", () => resolve(), { once: true });
+    img.addEventListener("error", () => resolve(), { once: true });
+  });
 }
 
-/** sessionStorage key: set once the first-visit intro has been finished or skipped. */
+/** Resolves once every hero image marked `data-lcp` (this breakpoint's main image) is decoded. */
+export function heroImagesReady(): Promise<void> {
+  const images = Array.from(document.querySelectorAll<HTMLImageElement>("img[data-lcp]"));
+  return Promise.all(images.map(imageReady)).then(() => undefined);
+}
+
+/** sessionStorage key: set once the first-visit loader has finished. */
 export const INTRO_SEEN_KEY = "yeet-intro-seen";

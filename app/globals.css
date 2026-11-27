@@ -99,33 +99,23 @@ html.lenis, html.lenis body { height: auto; }
 /* ---------- Marquee ---------- */
 .marquee-track { display: flex; width: max-content; will-change: transform; }
 
-/* ---------- Intro (first visit) & refresh loader ---------- */
-.intro-overlay, .refresh-loader { display: none; }
-html[data-intro="play"] .intro-overlay { display: block; }
-html[data-intro="refresh"] .refresh-loader { display: flex; }
-/* The page underneath stays put while the intro's own scroll track drives the peel. */
+/* ---------- Homepage loader (first visit and reloads of "/") ---------- */
+.logo-loader { display: none; }
+html[data-intro="play"] .logo-loader,
+html[data-intro="refresh"] .logo-loader { display: block; }
+/* Holds the page still under the loader (no scroll, no keyboard scrolling). */
 html.intro-lock, html.intro-lock body { overflow: hidden; }
-
-.intro-spinner { animation: intro-spin 0.9s linear infinite; }
-@keyframes intro-spin { to { transform: rotate(360deg); } }
-.intro-loading, .intro-ready { transition: opacity 0.35s ease, transform 0.35s ease; }
-.intro-ready { opacity: 0; transform: translateY(6px); }
-[data-state="ready"] .intro-loading { opacity: 0; }
-[data-state="ready"] .intro-spinner { animation: none; }
-[data-state="ready"] .intro-ready { opacity: 1; transform: none; }
-[data-state="ready"] .intro-scroller { overflow-y: auto; }
-.intro-arrow { animation: intro-nudge 1.6s ease-in-out infinite; }
-@keyframes intro-nudge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
-.intro-label-swipe { display: none; }
-@media (pointer: coarse) {
-  .intro-label-scroll { display: none; }
-  .intro-label-swipe { display: inline; }
+/* The logo's die-cut rim: four hard white offsets only (no blurred shadow). */
+.logo-loader-cut {
+  filter:
+    drop-shadow(2.5px 0 0 #fff) drop-shadow(-2.5px 0 0 #fff)
+    drop-shadow(0 2.5px 0 #fff) drop-shadow(0 -2.5px 0 #fff);
 }
-
-/* Failsafe: if JavaScript never starts, neither overlay can trap the visitor. */
-html[data-intro]:not([data-intro-js]) .intro-overlay,
-html[data-intro]:not([data-intro-js]) .refresh-loader { animation: intro-failsafe 0.4s 8s forwards; }
-@keyframes intro-failsafe { to { opacity: 0; visibility: hidden; } }
+/* Unfilled state: the whole logo as a faint white silhouette. */
+.logo-loader-ghost { filter: brightness(0) invert(1); opacity: 0.22; }
+/* Failsafe: if JavaScript never starts, the loader cannot trap the visitor. */
+html[data-intro]:not([data-intro-js]) .logo-loader { animation: loader-failsafe 0.4s 8s forwards; }
+@keyframes loader-failsafe { to { opacity: 0; visibility: hidden; } }
 
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {

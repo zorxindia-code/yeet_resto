@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useLayoutEffect, useRef, type ReactNode } from "react";
 import { gsap, prefersReducedMotion } from "@/lib/motion";
 
-// The full sticker-peel intro plays once per session (see StickerPreloader).
+// The homepage loader plays once per session (see LogoPreloader).
 // Later in-app navigations get this short red-sheet wipe instead.
 let isFirstRender = true;
 

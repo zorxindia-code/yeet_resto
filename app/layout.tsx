@@ -8,7 +8,6 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SITE } from "@/lib/site";
 import { INTRO_LOGO, introLogoSrcSet } from "@/lib/intro";
 import { INTRO_SEEN_KEY } from "@/lib/ready";
-import { RefreshLoader } from "@/components/RefreshLoader";
 
 const fredoka = Fredoka({ subsets: ["latin"], variable: "--font-fredoka", display: "swap" });
 const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-dm", display: "swap" });
@@ -34,18 +33,20 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-// Decides before first paint which loader a full page load gets:
-//  - "play": first homepage visit of the session → the scroll-to-peel intro. The seen flag is set
-//    only when the visitor finishes or skips it, so a reload mid-intro shows it again.
-//  - "refresh": every other full load (reloads, later visits, a page opened directly) → the short
-//    red-sheet loader. Reduced-motion visitors always get this one.
-// For "play" it also starts the intro logo download at high priority.
+// Decides before first paint whether the homepage loader runs, and which kind:
+//  - Not the homepage (e.g. /menu opened directly): "done", no loader at all.
+//  - "play": first homepage visit of the session → the full logo fill, then the peel. The seen flag
+//    is set only when the loader finishes, so a reload before that shows it again.
+//  - "refresh": later homepage loads, and reduced-motion visitors → the same loader, shorter. With
+//    reduced motion the logo shows complete without movement until the page is ready.
+// For "play" it also starts the logo download at high priority.
 const introScript = `
 (function(){try{
   var d = document.documentElement;
+  if (location.pathname !== '/') { d.setAttribute('data-intro','done'); return; }
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var seen = sessionStorage.getItem(${JSON.stringify(INTRO_SEEN_KEY)});
-  if (!reduce && !seen && location.pathname === '/') {
+  if (!reduce && !seen) {
     d.setAttribute('data-intro','play');
     var l = document.createElement('link');
     l.rel = 'preload'; l.as = 'image';
@@ -74,7 +75,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           Skip to content
         </a>
         <SmoothScrollProvider>
-          <RefreshLoader />
           <CustomCursor />
           <SiteHeader />
           <div id="main">{children}</div>

@@ -74,9 +74,9 @@ NEXT_PUBLIC_TIKTOK_URL
 ## Motion notes
 
 - Lenis is the only smooth-scroll engine. It runs on GSAP's ticker and drives `ScrollTrigger.update` (`components/SmoothScrollProvider.tsx`).
-- The sticker-peel preloader plays once per browser session. Later navigations use a short red-sheet wipe (`app/template.tsx`).
+- Homepage loader (`components/LogoPreloader.tsx`): the YEET logo fills from the bottom as real readiness milestones complete (hydration, logo, fonts, hero image; 4 s fallback), then one automatic sticker peel reveals the page. The full version plays on the first homepage visit of a browser session; reloads get a shorter one. Other pages opened directly get no loader, and in-app navigations use a short red-sheet wipe (`app/template.tsx`).
 - Pinned sequences (burger assembly, takeaway bag) run at ≥1024px only. Phones get a static composition.
-- `prefers-reduced-motion` skips the preloader, entrance animations, pins and the marquee. All content stays visible.
+- `prefers-reduced-motion` shows the loader's logo static until the page is ready (no fill or peel motion) and skips entrance animations, pins and the marquee. All content stays visible.
 - Entrance animations use `fromTo` on wrapper elements without CSS transitions, so they never fight hover transitions.
 - The hero burger is the LCP image: it loads eagerly at high priority and is never hidden with opacity.
 - The footer sticker playground (and GSAP Draggable) is lazy-loaded when it nears the viewport.

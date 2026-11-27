@@ -1,4 +1,4 @@
-import { StickerPreloader } from "@/components/StickerPreloader";
+import { LogoPreloader } from "@/components/LogoPreloader";
 import { HeroSection } from "@/components/HeroSection";
 import { AnimatedMarquee } from "@/components/AnimatedMarquee";
 import { FoodCategorySection } from "@/components/FoodCategorySection";
@@ -14,7 +14,7 @@ import { ComboPromo } from "@/components/ComboPromo";
 export default function HomePage() {
   return (
     <>
-      <StickerPreloader />
+      <LogoPreloader />
       <HeroSection />
       {/* Red hero → white marquee. Rises into the hero's bottom. */}
       <ScrollWaveTransition from="red" to="white" overlap="top" height={{ mobile: 64, desktop: 150 }} shape={0} direction="right" />
